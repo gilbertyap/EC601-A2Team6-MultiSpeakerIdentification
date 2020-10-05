@@ -18,17 +18,12 @@ While we have not yet chosen which path of research we would like to continue wi
 
 The following are some example user stories that we considered:
 
-```
-With more patients opting to use telehealth during the current coronavirus pandemic, it is becoming more important for physicians and specialists to have records of the conversations that they have had with their patients. Depending on the medical office, it may not be feasible to keep audio or video records due to data storage resources or privacy concerns. Automatic transcripts would both reduce the amount of data needed to be stored and minimize personal information down from voice and facial data to plain text. Transcripts based on video calls could benefit from the increased accuracy of facial recognition algorithms that more accurately create speaking segments compared to audio-only processing.
-```
 
-```
-Support call centers serve a specific role in a company's relationship with its customers. It can be important for companies to have records of the calls. While most call centers will record audio for future reference and training, it can be difficult to discern speech over the phone. Since call center employees are trained to respond to customers in very specific ways, a neural network could be trained to understand the linguistic role of a support agent and a customer based on text automatically generated from audio. Once these roles are established, labeling the identity of an utterance would become an easier task.
-```
+> With more patients opting to use telehealth during the current coronavirus pandemic, it is becoming more important for physicians and specialists to have records of the conversations that they have had with their patients. Depending on the medical office, it may not be feasible to keep audio or video records due to data storage resources or privacy concerns. Automatic transcripts would both reduce the amount of data needed to be stored and minimize personal information down from voice and facial data to plain text. Transcripts based on video calls could benefit from the increased accuracy of facial recognition algorithms that more accurately create speaking segments compared to audio-only processing.
 
-```
-Body cameras and other recording devices are becoming more prevalent in police work. Like how customer support agents are trained to use certain vocabulary, so are police and other law enforcement officers. By utilizing the differences in speech style between civilians and trained police, there may be ways to improve transcriptions for later examination in police case files.
-```
+> Support call centers serve a specific role in a company's relationship with its customers. It can be important for companies to have records of the calls. While most call centers will record audio for future reference and training, it can be difficult to discern speech over the phone. Since call center employees are trained to respond to customers in very specific ways, a neural network could be trained to understand the linguistic role of a support agent and a customer based on text automatically generated from audio. Once these roles are established, labeling the identity of an utterance would become an easier task.
+
+> Body cameras and other recording devices are becoming more prevalent in police work. Like how customer support agents are trained to use certain vocabulary, so are police and other law enforcement officers. By utilizing the differences in speech style between civilians and trained police, there may be ways to improve transcriptions for later examination in police case files.
 
 ### MVP
 
