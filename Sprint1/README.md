@@ -76,6 +76,9 @@ We are continuing to search for more open-source software libraries to aid in ou
 ---
 
 (1) - https://arxiv.org/pdf/1907.05337.pdf
+
 (2) - https://arxiv.org/pdf/1911.07994.pdf
+
 (3) - https://arxiv.org/abs/2007.01216
+
 (4) - https://www.mdpi.com/2414-4088/3/4/70
