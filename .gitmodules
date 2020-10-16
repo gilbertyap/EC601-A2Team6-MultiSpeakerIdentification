@@ -1,0 +1,3 @@
+[submodule "ThirdPartyTools/dscore"]
+	path = ThirdPartyTools/dscore
+	url = git@github.com:nryant/dscore.git
