@@ -31,7 +31,7 @@ if __name__ == "__main__":
         # Double check to see if you have already generated the .rttm file for the particular audio file
         (fileName, fileExt) = os.path.splitext(file)
         if os.path.exists(genRttmPath+fileName+'.rttm'):
-            print('This files .rttm file already was generated (maybe in a previous run?). Skipping...')
+            print('The .rttm file for {} already was generated (maybe in a previous run?). Skipping...'.format(genRttmPath+fileName+'.rttm'))
             continue
         else:
             pyannote_test_file_dict = {'uri': fileName, 'audio': audioPath+file}

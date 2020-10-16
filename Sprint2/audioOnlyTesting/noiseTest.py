@@ -70,9 +70,8 @@ def main(filePath, scale):
             wf.writeframes(bytes(new_wave_bytes))
 
         # print('Generating log file')
-        with open('snr.txt','a') as f:
-            f.write('File:{} , Scale: 1/{}, SNR:{}'.format(filePath, scale, round(snr,2)))
-            f.write()
+        with open('snr.txt','w+') as f:
+            f.write('File:{} , Scale: 1/{}, SNR:{}\n'.format(fileName+'_noise_'+str(scale).zfill(3)+'.wav', scale, round(snr,2)))
 
 
 if __name__ == '__main__':

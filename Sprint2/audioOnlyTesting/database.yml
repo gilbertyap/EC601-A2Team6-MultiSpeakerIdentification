@@ -1,19 +1,2 @@
 Databases:
    VoxConverse: ./audio/{uri}.wav
-
-Protocols:
-   VoxConverse:
-      SpeakerDiarization:
-          VoxConverseAudio:
-           train:
-              uri: ./Audio.development.lst
-              annotation: ./Audio.development.rttm
-              annotated: ./Audio.development.uem
-           development:
-              uri: ./Audio.development.lst
-              annotation: ./Audio.development.rttm
-              annotated: ./Audio.development.uem
-           test:
-              uri: ./Audio.development.lst
-              annotation: ./Audio.development.rttm
-              annotated: ./Audio.development.uem
