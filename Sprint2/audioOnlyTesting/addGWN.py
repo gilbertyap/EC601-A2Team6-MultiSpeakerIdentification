@@ -1,4 +1,11 @@
-import contextlib, numpy, os, struct, sys, wave
+# ************************************************************
+# Author: Gilbert Yap
+# Date: October 15, 2020
+# filename: addGWN.py
+# Summary: Combines a audio file with Gaussian White Noise at a given scale
+# Command Arguements: addGWN.py reference/file/path noise_scale_integer
+# ************************************************************
+import audioop, contextlib, numpy, os, struct, sys, wave
 
 # arg 0 - filepath
 # arg 1 - 1/(arg 1) max amplitude of noise
@@ -34,7 +41,7 @@ def main(filePath, scale):
             noise_signal = noise_signal / numpy.abs(numpy.min(noise_signal))
 
         #  Scale the noise to a smaller magnitude
-        noise_signal = 1/int(scale) * noise_signal
+        noise_signal = noise_signal / scale
 
         # Get the RMS of each
         wave_rms = numpy.sqrt(numpy.sum(numpy.power(wave_mag,2))/frames_num)
