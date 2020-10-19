@@ -1,6 +1,7 @@
-# Team 5 - Sprint 1
+# Team 6 - Sprint 1
 
-Our team, Team 5, is aiming to find new improvements or implementations of multiple speaker identification for the team project. After the research done in Project 1, we saw that multiple speaker identification's main uses are in automatic transcription, forensics analysis, and AI systems. Until the recent machine learning boom, these applications had used traditional signal processing methods to perform speaker segmentation and clustering. Although these signal processing methods are continuing to advance, recent papers have shown that cross-discipline research is bringing the field to new heights.
+Our team, Team 6, is aiming to find new improvements or implementations of multiple speaker identification for the 
+ project. After the research done in Project 1, we saw that multiple speaker identification's main uses are in automatic transcription, forensics analysis, and AI systems. Until the recent machine learning boom, these applications had used traditional signal processing methods to perform speaker segmentation and clustering. Although these signal processing methods are continuing to advance, recent papers have shown that cross-discipline research is bringing the field to new heights.
 
 For example, the papers (1) and (2) discuss how jointly performing Automatic Speech Recognition and Speaker Diarization leads to improve accuracy in 1-on-1 clinical transcriptions. These linguistic-based systems improve the "word diarization error rate", the percentage of words in an utterance that has been incorrectly labeled wit the wrong speaker identity, in doctor-patient roles where patients are presented with information and ask medical questions to a professional. These systems use CNN and RNN systems that are trained on thousands of hours of recordings.
 
