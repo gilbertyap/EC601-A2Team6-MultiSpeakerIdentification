@@ -5,7 +5,7 @@
 # Summary: Combines two files while scaling the max amplitude of the noise file
 # Command Arguements: addGWN.py reference/file/path noise/file/path noise_scale_integer
 # ************************************************************
-import contextlib, numpy, os, struct, sys, wave
+import audioop, contextlib, numpy, os, struct, sys, wave
 
 bins = numpy.array(numpy.linspace(-1,1,numpy.power(2,16)))
 
@@ -23,7 +23,6 @@ def getAudioFileData(filePath):
 def dequantizeFile(file_data):
     # De-quantization
     # Go through every two bytes and convert it into a magnitude value b/w -1 and 1
-    print('De-quantizing reference file')
     file_mag = []
     i = 0
     while i < int(len(file_data)-1):
@@ -36,79 +35,74 @@ def dequantizeFile(file_data):
 # arg 0 - refFilePath
 # arg 1 - noiseFilePath
 # arg 1 - 1/(arg 1) max amplitude of noise
-def main(refFilePath, noiseFilePath, scale):
-    if (('.wav' in refFilePath) and ('.wav' in noiseFilePath) ):
-        # magnitude values that corresponding to integer values
-        wave_data = getAudioFileData(refFilePath)
-        ref_frames_num = round(len(wave_data)/2)
+# Generate the corresponding audio files with the noise scaled by 1, 1/2, 1/4, 1/8, 1/16, and 1/32
+def main(refFilePath, noiseFilePath):
+    scaleList = [1,2,4,8,16,32]
+    for scale in scaleList:
+        if (('.wav' in refFilePath) and ('.wav' in noiseFilePath) ):
+            # Get reference file frames
+            sampwidth = 2
+            wave_data = getAudioFileData(refFilePath)
+            ref_frames_num = len(wave_data)
 
-        # De-quantization
-        wave_mag = dequantizeFile(wave_data)
+            # Get noise file frames
+            noise_data = getAudioFileData(noiseFilePath)
 
-        # Turn the noise file into magnitude scale
-        noise_data = getAudioFileData(noiseFilePath)
+            #  Scale the noise to a smaller magnitude, 1/scale
+            print('Reducing magntitude of noise by 1/{}'.format(scale))
+            noise_data = audioop.mul(noise_data, sampwidth, 1/scale)
 
-        # De-quantizate the noise file
-        noise_mag = dequantizeFile(noise_data)
+            # De-quantizate the noise file
+            noise_mag = dequantizeFile(noise_data)
 
-        #  Scale the noise to a smaller magnitude
-        print('Reducing magntitude of noise by 1/{}'.format(scale))
-        # noise_mag = noise_mag / scale
+            print('Scaling the noise to fit the reference file')
+            # Numpy takes care of repeating "noise_mag" when it resizes
+            scaled_noise_mag = noise_mag
+            scaled_noise_mag = numpy.resize(noise_mag, int(ref_frames_num/2))
+            scaled_noise_data = bytearray()
+            for index in numpy.digitize(scaled_noise_mag, bins).tolist():
+                scaled_noise_data.append(index & 0x00FF)
+                scaled_noise_data.append((index & 0xFF00) >> 8)
 
-        print('Scaling the noise to fit the reference file')
-        # Numpy takes care of repeating "noise_mag" when it resizes
-        scaled_noise_mag = noise_mag
-        scaled_noise_mag = numpy.resize(noise_mag, ref_frames_num)
+            # Get the RMS of each
+            wave_rms = audioop.rms(wave_data, sampwidth)
+            noise_rms = audioop.rms(scaled_noise_data, sampwidth)
 
-        # Get the RMS of each
-        wave_rms = numpy.sqrt(numpy.sum(numpy.power(wave_mag,2))/ref_frames_num)
-        noise_rms = numpy.sqrt(numpy.sum(numpy.power(scaled_noise_mag,2))/ref_frames_num)
+            # dB and SNR calculation
+            wave_db = 20 * numpy.log10(wave_rms)
+            noise_db = 20 * numpy.log10(noise_rms)
+            snr = wave_db - noise_db
+            print('Audio:{} dB, Noise:{} dB, SNR:{} dB'.format(wave_db, noise_db, snr))
 
-        # dB and SNR calculation
-        wave_db = 20 * numpy.log10(wave_rms)
-        noise_db = 20 * numpy.log10(noise_rms)
-        snr = wave_db - noise_db
-        print('Audio:{} dB, Noise:{} dB, SNR:{} dB'.format(wave_db, noise_db, snr))
+            # Combine two signals and clip
+            print('Combining signals')
+            new_wave_bytes = audioop.add(wave_data, scaled_noise_data, sampwidth)
 
-        # Combine two signals and clip
-        print('Combining signals')
-        # new_wave = wave_mag + scaled_noise_mag
-        new_wave = scaled_noise_mag
+            print('Creating new wav file')
+            refFileName, refFileExt = os.path.splitext(refFilePath)
+            noiseDir, noiseFullName = os.path.split(noiseFilePath)
+            noiseFileName, noiseFileExt = os.path.splitext(noiseFullName)
+            finalFileName = refFileName+'_'+noiseFileName+'_'+str(scale).zfill(3)+'.wav'
+            with contextlib.closing(wave.open(finalFileName, 'wb')) as wf:
+                wf.setnchannels(1)
+                wf.setsampwidth(2)
+                wf.setframerate(16000)
+                wf.writeframes(bytes(new_wave_bytes))
+            print('File created. Location is {}'.format(finalFileName))
 
-        print('Converting back to integer values')
-        numpy.clip(new_wave, -1, 1, new_wave)
-        new_wave = numpy.digitize(new_wave, bins)
+            # print('Generating log file')
+            with open('snr.txt','a') as f:
+                f.write('File:{} , Scale: 1/{}, SNR:{}\n'.format(finalFileName, scale, round(snr,2)))
 
-        python_list = new_wave.tolist()
-        new_wave_bytes = []
-        print('Constructing new bytes')
-        for val in python_list:
-            new_wave_bytes.append(val & 0x00FF)
-            new_wave_bytes.append((val & 0xFF00)>>8)
-
-        print('Creating new wav file')
-        refFileName, refFileExt = os.path.splitext(refFilePath)
-        noiseDir, noiseFullName = os.path.split(noiseFilePath)
-        noiseFileName, noiseFileExt = os.path.splitext(noiseFullName)
-        finalFileName = refFileName+'_'+noiseFileName+'_'+str(scale).zfill(3)+'.wav'
-        with contextlib.closing(wave.open(finalFileName, 'wb')) as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(16000)
-            wf.writeframes(bytes(new_wave_bytes))
-        print('File created. Location is {}'.format(finalFileName))
-
-        # print('Generating log file')
-        with open('snr.txt','a') as f:
-            f.write('File:{} , Scale: 1/{}, SNR:{}\n'.format(finalFileName, scale, round(snr,2)))
-    else:
-        print('Error! Can only execute on .wav files with sampling rate 16,000KHz and 16-bit depth.')
-        sys.exit(1)
+            # Make gap between trials
+            print('')
+        else:
+            print('Error! Can only execute on .wav files with sampling rate 16,000KHz and 16-bit depth.')
+            sys.exit(1)
 
 if __name__ == '__main__':
     args = sys.argv[1:]
     refFilePath = str(args[0])
     noiseFilePath = str(args[1])
-    scale = int(args[2])
-    main(refFilePath, noiseFilePath, scale)
+    main(refFilePath, noiseFilePath)
     sys.exit(0)

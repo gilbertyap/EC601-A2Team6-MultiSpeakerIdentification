@@ -63,6 +63,8 @@ if __name__ == "__main__":
 
     # .scp file for the reference files
     tempRttmFileList = os.listdir(refRttmPath)
+    if 'copyRttms.py' in tempRttmFileList:
+        tempRttmFileList.remove('copyRttms.py')
     finalRttmFileList = []
     for file in tempRttmFileList:
         finalRttmFileList.append(os.path.abspath(refRttmPath)+'/'+file)
