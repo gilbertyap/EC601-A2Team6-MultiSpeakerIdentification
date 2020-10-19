@@ -40,30 +40,30 @@ Our hypothesis was that an audio-only speaker identification system would strugg
 Both `hycgx.wav` and `dvngl.wav` were tested against the four forms of noise while varying the Signal to Noise Ratio (SNR). There were 6 trials for each noise file, and each trial the noise was scaled down by a factor of two (1/2). Below are the results:
 
 ### Gaussian White Noise
-[dvngl_gwn](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20GWN.png)
+![dvngl_gwn](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20GWN.png)
 
-[hycgx_gwn](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20GWN.png)
+![hycgx_gwn](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20GWN.png)
 
 For GWN, there appeared to be an logarithmically decaying relationship between DER and SNR. As the SNR increased by 6dB, the DER would exponentially decay at first and then hover at one value. Additional tests were run to include scales of 1/64, 1/128, and 1/256, but the DER did not converge to the base DER value without noise.
 
 ### music-hd-0000.wav
-[dvngl_hd-0000](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'music-hd-000.wav'.png)
+![dvngl_hd-0000](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'music-hd-000.wav'.png)
 
-[hycgx_hd-0000](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'music-hd-000.wav'.png)
+![hycgx_hd-0000](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'music-hd-000.wav'.png)
 
 The file `music-hd-0000.wav` appeared to only slightly affect the two sample audio files' DER value. There is a decreasing relationship between the DER and the SNR, but it does not quite fit a linear relationship.
 
 ### music-jamendo-0000.wav
-[dvngl_jamendo-0000](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'noise-free-sound-0042.wav'.png)
+![dvngl_jamendo-0000](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'music-jamendo-000.wav'.png)
 
-[hycgx_jamendo-0000](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'music-jamendo-000.wav'.png)
+![hycgx_jamendo-0000](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'music-jamendo-000.wav'.png)
 
 For `music-jamendo-0000.wav`, there appears to be an exponentially decaying relationship between DER and SNR.
 
 ### noise-free-sound-0042.wav
-[dvngl_noise-0042](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'noise-free-sound-0042.wav'.png)
+[dvngl_noise-0042](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'dvngl.wav'%20with%20'noise-free-sound-0042.wav'.png)
 
-[hycgx_noise-0042](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/blob/gilbert_sprint2/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'noise-free-sound-0042.wav'.png)
+[hycgx_noise-0042](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audioOnlyTesting/charts/SNR%20and%20DER%20for%20'hycgx.wav'%20with%20'noise-free-sound-0042.wav'.png)
 
 For `noise-free-sound-0042.wav`, the DER did not follow the same trend for `dvngl.wav` as it did for `hycgx.wav`. `hycgx.wav` had a trend of decreasing DER as SNR went up, but `dvngl.wav` did not.
 
