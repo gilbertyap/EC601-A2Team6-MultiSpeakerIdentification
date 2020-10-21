@@ -1,7 +1,7 @@
 Implemented using Tensorflow, run at real time spead. Designed to detect multiple faces. 
 
 
-https://github.com/zhoux17/EC_601/issues/3
+![alt text](http:/Users/gracezhou/Downloads/IMG_1978.JPG)
 
 
 Fully convolutional neural network based on YOLO. (Square)
