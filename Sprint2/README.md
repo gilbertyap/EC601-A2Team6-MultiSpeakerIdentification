@@ -11,7 +11,7 @@ From an abstract, modular perspective, most speaker identification systems go th
 **Audio-only speaker identification system**:
 ![audio_only_system](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/audio_only_system.png)
 
-In our proposed system, we want to leverage video data to improve the voice activity detection and speaker clustering portions of the audio-based speaker identification system. 
+In our proposed system, we want to leverage video data to improve the voice activity detection and speaker clustering portions of the audio-based speaker identification system.
 
 **Our proposed system**:
 ![team6_propose_system](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint2/team6_proposed_system.png)
@@ -38,8 +38,8 @@ Our next test will involve performing a similar process of adding noise into the
 
 ##  Resources
 
-* [pyannote-audio](https://github.com/pyannote/pyannote-audio
+* [pyannote-audio](https://github.com/pyannote/pyannote-audio)
 * [lip-reading-deeplearning](https://github.com/astorfi/lip-reading-deeplearning)
 * [VoxConverse](http://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 * [The AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
-* [Faced] (https://github.com/iitzco/faced)
+* [Faced](https://github.com/iitzco/faced)

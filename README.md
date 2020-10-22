@@ -1,7 +1,7 @@
 # EC601-A2Team6-MultiSpeakerIdentification
 
 ## Summary
-GitHub repository for EC601 Product Design Section A2 Team 6 project. 
+GitHub repository for EC601 Product Design Section A2 Team 6 project.
 
 ## Contributors:
 * Gilbert Yap - gilberty@bu.edu
@@ -10,4 +10,5 @@ GitHub repository for EC601 Product Design Section A2 Team 6 project.
 ## Project Details
 
 [Sprint 1](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint1)
+
 [Sprint 2](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint2)
