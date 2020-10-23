@@ -14,8 +14,8 @@
 
 #$ -j y
 
-#$ -o log.qlog
-#$ -e error_log.qlog
+#$ -o pyannote_log.qlog
+#$ -e pyannote_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="

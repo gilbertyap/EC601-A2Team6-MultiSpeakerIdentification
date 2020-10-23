@@ -42,28 +42,6 @@ source ../a2team6-env/bin/activate
 # Move to the correct directory first
 cd ../Sprint2/audioOnlyTesting/
 
-# Generate all audio files
-echo "Generating noise files for dvngl.wav with min scale of 1/1024"
-python3 addRecordedNoise.py ./audio/dvngl.wav ./noise/gwn.wav 1024
-
-python3 addRecordedNoise.py ./audio/dvngl.wav ./noise/music-hd-0000.wav 1024
-
-python3 addRecordedNoise.py ./audio/dvngl.wav ./noise/music-jamendo-0000.wav 1024
-
-python3 addRecordedNoise.py ./audio/dvngl.wav ./noise/noise-free-sound-0042.wav 1024
-
-echo "Done generating dvngl files"
-echo "Generating noise files for hycgx.wav with min scale of 1/1024"
-
-python3 addRecordedNoise.py ./audio/hycgx.wav ./noise/gwn.wav 1024
-
-python3 addRecordedNoise.py ./audio/hycgx.wav ./noise/music-hd-0000.wav 1024
-
-python3 addRecordedNoise.py ./audio/hycgx.wav ./noise/music-jamendo-0000.wav 1024
-
-python3 addRecordedNoise.py ./audio/hycgx.wav ./noise/noise-free-sound-0042.wav 1024
-
-echo "Done generating hycgx files"
 echo "Generating rttms"
 
 python3 generateRttms.py
