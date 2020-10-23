@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Set project
-#$ -P pyannote_training
+#$ -P ece601
 
 # Specify time limit
 #$ -l h_rt=24:00:00
@@ -34,7 +34,6 @@ echo "=========================================================="
 #$ -l gpu_c=6.0
 
 module load python3/3.6.5
-python -v 
 
 # First move to the correct parent directory
 cd ../

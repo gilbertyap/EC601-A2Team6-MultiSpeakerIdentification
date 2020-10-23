@@ -109,6 +109,6 @@ if __name__ == '__main__':
     args = sys.argv[1:]
     refFilePath = str(args[0])
     noiseFilePath = str(args[1])
-    minimumScale = str(args[2])
+    minimumScale = int(args[2])
     main(refFilePath, noiseFilePath, minimumScale)
     sys.exit(0)

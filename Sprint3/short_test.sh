@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
-# Set project
-#$ -P Sprint2_rerun
+# Set Project
+#$ -P ece601
 
 # Specify time limit
 #$ -l h_rt=1:00:00
@@ -25,7 +25,7 @@ echo "Job ID : $JOB_ID  $SGE_TASK_ID"
 echo "=========================================================="
 
 # Request node with 8 CPUs
-#$ -pe omp 4
+#$ -pe omp 8
 
 # Request number of GPUs
 #$ -l gpus=1
@@ -34,7 +34,9 @@ echo "=========================================================="
 #$ -l gpu_c=6.0
 
 module load python3/3.6.5
-python -v 
+
+# Activate venv
+source ../a2team6-env/bin/activate
 
 # Move to the correct directory first
 cd ../Sprint2/audioOnlyTesting/
