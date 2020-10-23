@@ -110,5 +110,9 @@ if __name__ == '__main__':
     refFilePath = str(args[0])
     noiseFilePath = str(args[1])
     minimumScale = int(args[2])
-    main(refFilePath, noiseFilePath, minimumScale)
-    sys.exit(0)
+    try:
+      main(refFilePath, noiseFilePath, minimumScale)
+      sys.exit(0)
+    except:
+      print('Could not add noise to all files correctly.')
+      sys.exit(1)

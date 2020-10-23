@@ -33,7 +33,8 @@ echo "=========================================================="
 # Choose a GPU minimum capability
 #$ -l gpu_c=6.0
 
-module load python3/3.6.5
+# Need Python 3.7 for pyannote
+module load python3/3.7.7
 
 # First move to the correct parent directory
 cd ../
