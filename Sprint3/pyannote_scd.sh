@@ -14,8 +14,8 @@
 
 #$ -j y
 
-#$ -o pyannote_log.qlog
-#$ -e pyannote_error_log.qlog
+#$ -o pyannote_scd_log.qlog
+#$ -e pyannote_scd_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -46,12 +46,9 @@ source a2team6-env/bin/activate
 cd ThirdPartyTools
 
 # Export database environment variable
-export PYANNOTE_DATABASE_CONFIG=./database.yml
+export PYANNOTE_DATABASE_CONFIG=database.yml
 
 echo "---------SCD---------"
-mkdir scd
-cp ./pyannote-audio/tutorials/models/speaker_change_detection/config.yml ./scd/config.yml
-
 echo "---------SCD Training---------"
 
 # SCD training
