@@ -34,10 +34,15 @@ def dequantizeFile(file_data):
 
 # arg 0 - refFilePath
 # arg 1 - noiseFilePath
-# arg 1 - 1/(arg 1) max amplitude of noise
+# arg 2 - 1/(arg 2) max amplitude of noise
 # Generate the corresponding audio files with the noise scaled by 1, 1/2, 1/4, 1/8, 1/16, and 1/32
-def main(refFilePath, noiseFilePath):
-    scaleList = [1,2,4,8,16,32]
+def main(refFilePath, noiseFilePath, minimumScale):
+    scaleList = []
+    i = 1
+    while i <= minimumScale:
+      scaleList.append(i)
+      i *= 2
+
     for scale in scaleList:
         if (('.wav' in refFilePath) and ('.wav' in noiseFilePath) ):
             # Get reference file frames
@@ -104,5 +109,6 @@ if __name__ == '__main__':
     args = sys.argv[1:]
     refFilePath = str(args[0])
     noiseFilePath = str(args[1])
-    main(refFilePath, noiseFilePath)
+    minimumScale = str(args[2])
+    main(refFilePath, noiseFilePath, minimumScale)
     sys.exit(0)
