@@ -10,12 +10,12 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_training_scd
+#$ -N emb_validate_apply
 
 #$ -j y
 
-#$ -o pyannote_scd_log.qlog
-#$ -e pyannote_scd_error_log.qlog
+#$ -o emb_validate_apply_log.qlog
+#$ -e emb_error_validate_apply_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -48,21 +48,15 @@ cd ThirdPartyTools
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=database.yml
 
-echo "---------SCD---------"
-echo "---------SCD Training---------"
-
-# SCD training
-export EXP_DIR=./scd/ 
-pyannote-audio scd train --gpu --subset=train --to=400 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
-
-echo "---------SCD Validation---------"
-
-# SCD validation
+echo "---------EMB---------"
+# EMB training
+export EXP_DIR=./emb/
+# EMB validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio scd validate --gpu --subset=development --from=200 --to=400 --every=100 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio emb validate --gpu --subset=development --to=65 --every=5 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-echo "---------SCD Application---------"
+echo "---------EMB Application---------"
 
-# SCD application
-export VAL_DIR=${TRN_DIR}/validate_detection_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
-pyannote-audio scd apply --gpu --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse
+# EMB application
+export VAL_DIR=${TRN_DIR}/validate_diarization_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
+pyannote-audio emb apply --gpu ---step=0.1 --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse

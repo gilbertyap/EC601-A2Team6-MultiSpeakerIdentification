@@ -11,9 +11,9 @@ Protocols:
               annotation: ../../../VoxConverse/voxconverse.train.rttm
               annotated: ../../../VoxConverse/voxconverse.train.uem
            development:
-              uri: ../../../Voxconverse/voxconverse.dev.lst
-              annotation: ../../../Voxconverse/voxconverse.dev.rttm
-              annotated: ../../../Voxconverse/voxconverse.dev.uem
+              uri: ../../../VoxConverse/voxconverse.dev.lst
+              annotation: ../../../VoxConverse/voxconverse.dev.rttm
+              annotated: ../../../VoxConverse/voxconverse.dev.uem
            test:
               uri: ../../../VoxConverse/voxconverse.test.lst
               annotation: ../../../VoxConverse/voxconverse.test.rttm

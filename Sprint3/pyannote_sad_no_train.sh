@@ -4,7 +4,7 @@
 #$ -P ece601
 
 # Specify time limit
-#$ -l h_rt=12:00:00
+#$ -l h_rt=18:00:00
 
 # Send an email for all possible events
 #$ -m beas
@@ -53,17 +53,13 @@ cd ThirdPartyTools
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
 echo "---------SAD---------"
-echo "---------SAD Training---------"
-
-# SAD training
 export EXP_DIR=./sad/ 
-pyannote-audio sad train --gpu --subset=train --to=200 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
-
 echo "---------SAD Validation---------"
 
 # SAD validation
+# Only ended up with 172 runs, change length of validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio sad validate --gpu --subset=development --from=10 --to=200 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio sad validate --gpu --subset=development --from=120 --to=170 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------SAD Application---------"
 exportVAL_DIR=${TRN_DIR}/validate_detection_fscaore_VoxConverse.SpeakerDiarization.voxconverse.development
