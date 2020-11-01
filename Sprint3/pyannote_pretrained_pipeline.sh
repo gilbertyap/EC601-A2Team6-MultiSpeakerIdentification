@@ -51,10 +51,15 @@ export EXP_DIR=./pretrained/
 
 for SUBSET in development test
   do
-  for TASK in sad scd emb
+  for TASK in sad scd
     do
       pyannote-audio ${TASK} apply --gpu --step=0.1 --pretrained=${TASK}_ami --subset=${SUBSET} ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
     done
+  done
+
+for SUBSET in development test
+  do
+    pyannote-audio ${TASK} apply --gpu --step=0.1 --pretrained=emb_voxceleb--subset=${SUBSET} ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
   done
 
 echo "----------PIPELINE TRAINING----------"

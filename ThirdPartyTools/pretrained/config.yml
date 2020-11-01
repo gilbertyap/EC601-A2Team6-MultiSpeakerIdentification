@@ -3,7 +3,7 @@ pipeline:
    params:
       sad_scores: ./pretrained/sad_ami
       scd_scores: ./pretrained/scd_ami
-      embedding: ./pretrained/emb_ami
+      embedding: ./pretrained/emb_voxceleb
       evaluation_only: False
       method: affinity_propagation
 
