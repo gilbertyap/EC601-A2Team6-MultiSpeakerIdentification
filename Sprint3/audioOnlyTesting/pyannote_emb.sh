@@ -10,12 +10,12 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_sad_training
+#$ -N pyannote_emb_training
 
 #$ -j y
 
-#$ -o pyannote_sad_log.qlog
-#$ -e pyannote_sad_error_log.qlog
+#$ -o pyannote_emb_log.qlog
+#$ -e pyannote_emb_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -37,7 +37,7 @@ echo "=========================================================="
 module load python3/3.7.7
 
 # First move to the correct parent directory
-cd ../
+cd ../../
 
 # Activate venv
 source a2team6-env/bin/activate
@@ -48,17 +48,17 @@ cd ThirdPartyTools
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "---------SAD Training---------"
-# SAD training
-export EXP_DIR=./sad/ 
-pyannote-audio sad train --gpu --subset=train --to=170 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
+echo "---------EMD Training---------"
+# EMB training
+export EXP_DIR=./emb/
+pyannote-audio emb train --gpu --subset=train --to=65 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-echo "---------SAD Validation---------"
-# SAD validation
+echo "---------EMD Validation---------"
+# EMB validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio sad validate --gpu --subset=development --from=10 --to=170 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio emb validate --gpu --subset=development --to=65 --every=5 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-echo "---------SAD Application---------"
-# SAD Application
-export VAL_DIR=${TRN_DIR}/validate_detection_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
-pyannote-audio sad apply --gpu --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse
+echo "---------EMD Application---------"
+# EMB application
+export VAL_DIR=${TRN_DIR}/validate_diarization_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
+pyannote-audio emb apply --gpu ---step=0.1 --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse

@@ -10,12 +10,12 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_scd_training
+#$ -N pyannote_sad_training
 
 #$ -j y
 
-#$ -o pyannote_scd_log.qlog
-#$ -e pyannote_scd_error_log.qlog
+#$ -o pyannote_sad_log.qlog
+#$ -e pyannote_sad_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -37,7 +37,7 @@ echo "=========================================================="
 module load python3/3.7.7
 
 # First move to the correct parent directory
-cd ../
+cd ../../
 
 # Activate venv
 source a2team6-env/bin/activate
@@ -48,17 +48,17 @@ cd ThirdPartyTools
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "---------SCD Training---------"
-# SCD training
-export EXP_DIR=./scd/ 
-pyannote-audio scd train --gpu --subset=train --to=335 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
+echo "---------SAD Training---------"
+# SAD training
+export EXP_DIR=./sad/ 
+pyannote-audio sad train --gpu --subset=train --to=170 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-echo "---------SCD Validation---------"
-# SCD validation
+echo "---------SAD Validation---------"
+# SAD validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio scd validate --gpu --subset=development --from=110 --to=335 --every=45 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio sad validate --gpu --subset=development --from=10 --to=170 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-echo "---------SCD Application---------"
-# SCD application
-export VAL_DIR=${TRN_DIR}/validate_segmentation_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
-pyannote-audio scd apply --gpu --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse
+echo "---------SAD Application---------"
+# SAD Application
+export VAL_DIR=${TRN_DIR}/validate_detection_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
+pyannote-audio sad apply --gpu --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse

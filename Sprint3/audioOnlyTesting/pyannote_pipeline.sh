@@ -10,12 +10,12 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_pretrained
+#$ -N pyannote_pipeline_training
 
 #$ -j y
 
-#$ -o pyannote_pretrained_log.qlog
-#$ -e pyannote_pretrained_error_log.qlog
+#$ -o pyannote_pipeline_log.qlog
+#$ -e pyannote_pipeline_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -36,37 +36,21 @@ echo "=========================================================="
 # Need Python 3.7 for pyannote
 module load python3/3.7.7
 
+cd ../../
+
 # Activate venv
-source ../a2team6-env/bin/activate
+source /a2team6-env/bin/activate
 
 # Move to the ThirdPartyTools directory
-cd ../ThirdPartyTools
+cd ThirdPartyTools
 
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "-----APPLYING PRETRAINED MODELS-----"
-# Applies the pretrained models against the test and development sets
-export EXP_DIR=./pretrained/
-
-for SUBSET in development test
-  do
-  for TASK in sad scd
-    do
-      pyannote-audio ${TASK} apply --gpu --step=0.1 --pretrained=${TASK}_ami --subset=${SUBSET} ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
-    done
-  done
-
-for SUBSET in development test
-  do
-    pyannote-audio ${TASK} apply --gpu --step=0.1 --pretrained=emb_voxceleb--subset=${SUBSET} ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
-  done
-
-echo "----------PIPELINE TRAINING----------"
-# Trains the pipeline sing the applied models
+echo "---------PIPELINE TRAINING---------"
+export EXP_DIR=./pipeline/
 pyannote-pipeline train --subset=development --iterations=100 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------PIPELINE Application---------"
-# Applies pipline to test set
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.development
-pyannote-pipeline apply --subset=test ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-pipeline apply --subset=test ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse.MixHeadset
