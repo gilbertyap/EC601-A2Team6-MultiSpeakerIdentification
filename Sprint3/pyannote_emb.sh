@@ -10,7 +10,7 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_training_emb
+#$ -N pyannote_emb_training
 
 #$ -j y
 
@@ -46,23 +46,19 @@ source a2team6-env/bin/activate
 cd ThirdPartyTools
 
 # Export database environment variable
-export PYANNOTE_DATABASE_CONFIG=database.yml
+export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "---------EMD---------"
 echo "---------EMD Training---------"
-
 # EMB training
-export EXP_DIR=/emb/
-pyannote-audio emb train --gpu --subset=train --to=250 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
+export EXP_DIR=./emb/
+pyannote-audio emb train --gpu --subset=train --to=65 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------EMD Validation---------"
-
 # EMB validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio emb validate --gpu --subset=development --to=250 --every=5 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio emb validate --gpu --subset=development --to=65 --every=5 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------EMD Application---------"
-
 # EMB application
-export VAL_DIR=${TRN_DIR}/validate_detection_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
+export VAL_DIR=${TRN_DIR}/validate_diarization_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
 pyannote-audio emb apply --gpu ---step=0.1 --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse

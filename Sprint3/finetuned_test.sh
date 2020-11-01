@@ -4,18 +4,18 @@
 #$ -P ece601
 
 # Specify time limit
-#$ -l h_rt=1:00:00
+#$ -l h_rt=12:00:00
 
 # Send an email for all possible events
 #$ -m beas
 
 # Job name
-#$ -N generate_all_files
+#$ -N generate_rttms
 
 #$ -j y
 
-#$ -o log.qlog
-#$ -e error_log.qlog
+#$ -o rttm_log.qlog
+#$ -e rttm_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -25,7 +25,7 @@ echo "Job ID : $JOB_ID  $SGE_TASK_ID"
 echo "=========================================================="
 
 # Request node with 4 CPUs
-#$ -pe omp 4
+#$ -pe omp 8
 
 # Request number of GPUs
 #$ -l gpus=1
@@ -39,14 +39,18 @@ module load python3/3.7.7
 # Activate venv
 source ../a2team6-env/bin/activate
 
-# Move to the correct directory first
-cd ../Sprint2/audioOnlyTesting/
+echo "**********Running finetunedTest.py**********"
 
-echo "Generating rttms"
+python3 finetunedTest.py
 
-python3 generateRttms.py
-
-echo "Finished generating rttms"
-echo "Running dscore"
-
-python3 ../../ThirdPartyTools/dscore/score.py -R reference.scp -S score.scp
+if -e reference.scp
+then
+  if -e score.scp
+  then
+    echo "**********Running dscore**********"
+    python3 ../../ThirdPartyTools/dscore/score.py -R reference.scp -S score.scp
+  else
+  fi
+else
+    echo "**********.scp files were not generated, probably due to error above**********"
+fi

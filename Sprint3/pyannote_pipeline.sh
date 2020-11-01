@@ -10,12 +10,12 @@
 #$ -m beas
 
 # Job name
-#$ -N pyannote_training_scd
+#$ -N pyannote_pipeline_training
 
 #$ -j y
 
-#$ -o pyannote_scd_log.qlog
-#$ -e pyannote_scd_error_log.qlog
+#$ -o pyannote_pipeline_log.qlog
+#$ -e pyannote_pipeline_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -36,21 +36,19 @@ echo "=========================================================="
 # Need Python 3.7 for pyannote
 module load python3/3.7.7
 
-# First move to the correct parent directory
-cd ../
-
 # Activate venv
-source a2team6-env/bin/activate
+source ../a2team6-env/bin/activate
 
 # Move to the ThirdPartyTools directory
-cd ThirdPartyTools
+cd ../ThirdPartyTools
 
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "---------SCD---------"
-echo "---------SCD Training---------"
+echo "---------PIPELINE TRAINING---------"
+export EXP_DIR=./pipeline/
+pyannote-pipeline train --subset=development --iterations=100 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
-# SCD training
-export EXP_DIR=./scd/ 
-pyannote-audio scd train --gpu --subset=train --to=335 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
+echo "---------PIPELINE Application---------"
+export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.development
+pyannote-pipeline apply --subset=test ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse.MixHeadset

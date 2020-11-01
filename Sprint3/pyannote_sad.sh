@@ -4,13 +4,13 @@
 #$ -P ece601
 
 # Specify time limit
-#$ -l h_rt=12:00:00
+#$ -l h_rt=24:00:00
 
 # Send an email for all possible events
 #$ -m beas
 
 # Job name
-#$ -N pyannote_training_sad
+#$ -N pyannote_sad_training
 
 #$ -j y
 
@@ -36,10 +36,6 @@ echo "=========================================================="
 # Need Python 3.7 for pyannote
 module load python3/3.7.7
 
-# Say where the pwd is
-echo "pwd is:"
-pwd
-
 # First move to the correct parent directory
 cd ../
 
@@ -52,19 +48,17 @@ cd ThirdPartyTools
 # Export database environment variable
 export PYANNOTE_DATABASE_CONFIG=./database.yml
 
-echo "---------SAD---------"
 echo "---------SAD Training---------"
-
 # SAD training
 export EXP_DIR=./sad/ 
-pyannote-audio sad train --gpu --subset=train --to=200 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio sad train --gpu --subset=train --to=170 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------SAD Validation---------"
-
 # SAD validation
 export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio sad validate --gpu --subset=development --from=10 --to=200 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
+pyannote-audio sad validate --gpu --subset=development --from=10 --to=170 --every=10 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
 
 echo "---------SAD Application---------"
-exportVAL_DIR=${TRN_DIR}/validate_detection_fscaore_VoxConverse.SpeakerDiarization.voxconverse.development
+# SAD Application
+export VAL_DIR=${TRN_DIR}/validate_detection_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
 pyannote-audio sad apply --gpu --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse
