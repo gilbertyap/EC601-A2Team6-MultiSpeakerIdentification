@@ -22,23 +22,35 @@ After each module has gone through these three steps, the pipeline needs to be t
 
 ## Observations/Results
 
-In testing this audio-only solution, we believed that we had run each portion of this training correctly. We were able to generate the scores for SAD and SCD without any issues. However, we ran into issues with training the speaker embedding portion of the neural network. The `validate` stage continued to return an error, which we [reported to the authors](https://github.com/pyannote/pyannote-audio/issues/463) of `pyannote-audio`. As of November 1st 2020, there has been no response. 
+In testing this audio-only solution, we believed that we ran each portion of this training correctly. We were able to generate the scores for SAD and SCD without any issues. However, we ran into issues with training the speaker embedding portion of the neural network. The `validate` stage continued to return an error, which we [reported to the authors](https://github.com/pyannote/pyannote-audio/issues/463) of `pyannote-audio`. As of November 1st 2020, there has been no response. 
 
-Since this issue occured about a week before Sprint 3's deadline, an alternate approach was taken to check new DER scores. Rather than having all three modules trained on VoxConverse, we attempted to train the speaker diarization pipeline with only the SAD and SCD modules trained and used the EMB model that was pretrained on the VoxCeleb1 dataset. Below we outline the results of the pipeline that uses all pre-trained modules vs ours that had 2 of the 3 trained on VoxConverse:
+Since this issue occured about a week before Sprint 3's deadline, an alternate approach was taken to check new DER scores. Rather than having all three modules trained on VoxConverse, we attempted to train the speaker diarization pipeline with only the SAD and SCD modules trained and used the EMB model that was pretrained on the VoxCeleb1 dataset. [This is the link](https://docs.google.com/spreadsheets/d/1YtCeGQi6UqZ7mQpsCvcqjuH75l8F-_zVxhTIZ_53UME/edit?usp=sharing) to the diarization error scores. Below are some samples:
 
-**Pretrained**
-**This is where you would put pre-trained**
+**Comparison of pipeline results**
+![pipeline](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint3/audioOnlyTesting/pipeline_comparison.png)
 
-**Custom Trained**
-**This is where you would put custom trained**
+**Comparison of SAD results**
+![sad](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint3/audioOnlyTesting/sad_comparison.png)
 
-As seen from the DER scores...**results here**.
+As seen from the above DER scores, the overall speaker diarization became worse after training, scoring 33.98% DER vs the pre-trained's 16.94%. The SAD module, which can be implemented as its own pipeline, scored overall better at 2.32% DER vs 4.32% with the pre-trained SAD module. Data for comparing the pretrained SCD to the custom trained one is in the `pretrained` and `customtrained` folders, but we are still researching the meaning of these values. We did not get the chance to perform further noise tests after the training the speaker diarization pipeline due to time constraints, but based on the overall DER scores, we do not believe that noise testing would have produced good results.
 
 ## Next Steps
 
-As of today, it is unclear if the errors with the training arose from the VoxConverse dataset or from the `pyannote-audio` library itself. In the next sprint, we are considering gather new videos and audio that better simulate the conditions we are hoping to optimize against - noisy audio samples from sub-optimal recording conditions.
+As of today, it is unclear if the errors with the training arose from the VoxConverse dataset or from the `pyannote-audio` library itself. In the next sprint, since we are looking at using the VoxCeleb dataset, we may not need to perform our own full training and can opt instead for fine-tuning the pre-trained models to the subset of VoxCeleb that we will use. This will give us more time to focus on things like noise testing and facial landmark analysis.
 
 ## Citations:
+VoxCeleb Dataset:
+```
+@misc{nagrani2018voxceleb,
+      title={VoxCeleb: a large-scale speaker identification dataset}, 
+      author={Arsha Nagrani and Joon Son Chung and Andrew Zisserman},
+      year={2018},
+      eprint={1706.08612},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD}
+}
+```
+
 VoxConverse Dataset
 ```
 @article{chung2020spot,
