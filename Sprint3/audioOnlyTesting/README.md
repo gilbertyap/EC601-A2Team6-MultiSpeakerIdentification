@@ -27,9 +27,11 @@ In testing this audio-only solution, we believed that we ran each portion of thi
 Since this issue occured about a week before Sprint 3's deadline, an alternate approach was taken to check new DER scores. Rather than having all three modules trained on VoxConverse, we attempted to train the speaker diarization pipeline with only the SAD and SCD modules trained and used the EMB model that was pretrained on the VoxCeleb1 dataset. [This is the link](https://docs.google.com/spreadsheets/d/1YtCeGQi6UqZ7mQpsCvcqjuH75l8F-_zVxhTIZ_53UME/edit?usp=sharing) to the diarization error scores. Below are some samples:
 
 **Comparison of pipeline results**
+
 ![pipeline](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint3/audioOnlyTesting/pipeline_comparison.png)
 
 **Comparison of SAD results**
+
 ![sad](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/Sprint3/audioOnlyTesting/sad_comparison.png)
 
 As seen from the above DER scores, the overall speaker diarization became worse after training, scoring 33.98% DER vs the pre-trained's 16.94%. The SAD module, which can be implemented as its own pipeline, scored overall better at 2.32% DER vs 4.32% with the pre-trained SAD module. Data for comparing the pretrained SCD to the custom trained one is in the `pretrained` and `customtrained` folders, but we are still researching the meaning of these values. We did not get the chance to perform further noise tests after the training the speaker diarization pipeline due to time constraints, but based on the overall DER scores, we do not believe that noise testing would have produced good results.
