@@ -11,6 +11,7 @@ Note that `pyannote-audio` does not perform well in Windows. Please use Linux or
 ## Instructions
 
 Below is a sample run of this folder.
+# `export PYANNOTE_DATABASE_CONFIG=database.yml`
 * `python addRecordedNoise.py ./audio/dvngl.wav ./noise/gwn.wav`
 * `python ./ref/copyRttms.py`
 * `python generateRttms.py`

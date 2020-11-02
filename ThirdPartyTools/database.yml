@@ -1,0 +1,30 @@
+Databases:
+   VoxConverse: ../../../VoxConverse/*/audio/{uri}.wav
+   MUSAN: ../../../musan/{uri}.wav
+
+Protocols:
+   VoxConverse:
+      SpeakerDiarization:
+         voxconverse:
+           train:
+              uri: ../../../VoxConverse/voxconverse.train.lst
+              annotation: ../../../VoxConverse/voxconverse.train.rttm
+              annotated: ../../../VoxConverse/voxconverse.train.uem
+           development:
+              uri: ../../../VoxConverse/voxconverse.dev.lst
+              annotation: ../../../VoxConverse/voxconverse.dev.rttm
+              annotated: ../../../VoxConverse/voxconverse.dev.uem
+           test:
+              uri: ../../../VoxConverse/voxconverse.test.lst
+              annotation: ../../../VoxConverse/voxconverse.test.rttm
+              annotated: ../../../VoxConverse/voxconverse.test.uem
+   MUSAN:
+      Collection:
+         BackgroundNoise:
+            uri: ../../../musan/background_noise.txt
+         Noise:
+            uri: ../../../musan/noise.txt
+         Music:
+            uri: ../../../musan/music.txt
+         Speech:
+            uri: ../../../musan/speech.txt
