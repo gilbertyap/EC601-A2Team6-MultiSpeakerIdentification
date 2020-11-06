@@ -20,7 +20,11 @@ while i < numVideos:
             # Initiate the download of the combined video/audio mp4
             print('Attempting to download video from {}'.format(link))
             yt = YouTube(link)
-            yt.streams.filter(progressive=True, file_extension='mp4').first().download()
+            # Try to download video at 720p quality if possible
+            for stream in yt.streams.filter(progressive=True, file_extension='mp4'):
+                if stream.resolution ==  '720p':
+                    stream.download()
+                    break
             i += 1
             history.append(randIndex)
             print('Download succeeded!')
