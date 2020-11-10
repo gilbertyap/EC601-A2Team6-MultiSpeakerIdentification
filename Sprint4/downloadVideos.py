@@ -1,12 +1,17 @@
 # Download YouTube videos from a text file of youtube links
 
 from pytube import YouTube
-import random
+import os, random
 
 print('Getting all VoxCeleb1 links...')
 videoLinks = []
 with open('voxCeleb1_links.txt','r') as f:
     videoLinks = f.readlines()
+
+# Make video folder
+downloadPath = './downloaded_videos/'
+if not os.path.isdir(downloadPath):
+    os.mkdir(downloadPath)
 
 numVideos = 10
 print('Downloading {} random links...'.format(numVideos))
@@ -23,7 +28,7 @@ while i < numVideos:
             # Try to download video at 720p quality if possible
             for stream in yt.streams.filter(progressive=True, file_extension='mp4'):
                 if stream.resolution ==  '720p':
-                    stream.download()
+                    stream.download(downloadPath)
                     break
             i += 1
             history.append(randIndex)
