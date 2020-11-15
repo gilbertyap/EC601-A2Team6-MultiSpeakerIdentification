@@ -25,3 +25,15 @@ https://docs.google.com/spreadsheets/d/1d31OD8tU7RA9N4BaHeTrPBjyTb50P18-OOX3IEhf
 These results show us that with our constraints while using the SCC, we may not be able to get the same results as the pre-trained models. Since we are using the VoxCeleb1 dataset, we may be better off using the pre-trained model provided by `pyannote-audio` through Torch Hub. However, our above results show that continued training of the network does yeild better results.
 
 ## Next Steps
+
+In our final sprint and before our final presentation, we have a few main goals to accomplish:
+
+* Generate DER values for audio-only speaker identification of our selected videos.
+
+* Develop our prioritization system
+
+* Perform tests on videos with visual distortions/degradations
+
+* Make the system easier to use by any developer
+
+In Sprint 5, we will focus on developing our prioritization system. We will need to verify our system against the timestamps provided by the `VoxCeleb1` dataset and see if we can improve on the DER values when compared to audio only.
