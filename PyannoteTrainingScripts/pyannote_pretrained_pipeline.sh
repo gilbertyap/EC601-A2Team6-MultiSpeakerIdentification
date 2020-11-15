@@ -36,7 +36,7 @@ echo "=========================================================="
 # Need Python 3.7 for pyannote
 module load python3/3.7.7
 
-cd ../../
+cd ../
 
 # Activate venv
 source /a2team6-env/bin/activate
