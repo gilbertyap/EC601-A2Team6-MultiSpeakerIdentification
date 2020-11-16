@@ -14,8 +14,8 @@
 
 #$ -j y
 
-#$ -o pyannote_emb_log.qlog
-#$ -e pyannote_emb_error_log.qlog
+#$ -o emb_train_log.qlog
+#$ -e emb_train_error_log.qlog
 
 # Keep track of information related to the current job
 echo "=========================================================="
@@ -37,7 +37,7 @@ echo "=========================================================="
 module load python3/3.7.7
 
 # First move to the correct parent directory
-cd ../../
+cd ../
 
 # Activate venv
 source a2team6-env/bin/activate
@@ -52,13 +52,3 @@ echo "---------EMD Training---------"
 # EMB training
 export EXP_DIR=./emb/
 pyannote-audio emb train --gpu --subset=train --to=65 --parallel=8 ${EXP_DIR} VoxConverse.SpeakerDiarization.voxconverse
-
-echo "---------EMD Validation---------"
-# EMB validation
-export TRN_DIR=${EXP_DIR}/train/VoxConverse.SpeakerDiarization.voxconverse.train
-pyannote-audio emb validate --gpu --subset=development --to=65 --every=5 ${TRN_DIR} VoxConverse.SpeakerDiarization.voxconverse
-
-echo "---------EMD Application---------"
-# EMB application
-export VAL_DIR=${TRN_DIR}/validate_diarization_fscore/VoxConverse.SpeakerDiarization.voxconverse.development
-pyannote-audio emb apply --gpu ---step=0.1 --subset=test ${VAL_DIR} VoxConverse.SpeakerDiarization.voxconverse

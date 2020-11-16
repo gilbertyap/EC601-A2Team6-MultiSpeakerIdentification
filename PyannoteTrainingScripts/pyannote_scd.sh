@@ -37,7 +37,7 @@ echo "=========================================================="
 module load python3/3.7.7
 
 # First move to the correct parent directory
-cd ../../
+cd ../
 
 # Activate venv
 source a2team6-env/bin/activate
