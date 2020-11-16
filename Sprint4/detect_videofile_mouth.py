@@ -35,9 +35,9 @@ def mouth_aspect_ratio(mouth):
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-p", "--shape-predictor", required=False, default='shape_predictor_68_face_landmarks.dat',
-	help="/Users/gracezhou/desktop/mouth-open")
+	help="/Users/desktop/mouth-open")
 ap.add_argument("-v", "--video", default="example.mp4",
-	help="/Users/gracezhou/desktop/mouth-open/video")
+	help="/Users/desktop/mouth-open/video")
 args = vars(ap.parse_args())
 
 
