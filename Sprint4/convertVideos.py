@@ -26,7 +26,7 @@ for video in videoList:
         convertAudio = convertAudio.fx(afx.audio_normalize)
         convertAudio.write_audiofile(audioFolder+fileName+'.wav', fps=48000, nbytes=2, codec='pcm_s16le')
         convertVideo.write_videofile(videoFolder+fileName+'.mp4',fps=25)
-        convertVideo.close()
+        convertAudio.close()
         convertVideo.close()
     except:
         print('Could not convert {}'.format(video))

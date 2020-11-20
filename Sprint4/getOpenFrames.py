@@ -1,6 +1,8 @@
 # USAGE
-# python detect_drowsiness.py --shape-predictor shape_predictor_68_face_landmarks.dat
-# python detect_drowsiness.py --shape-predictor shape_predictor_68_face_landmarks.dat --alarm alarm.wav
+# python getOpenFrames.py -v video.mp4
+# or 
+# python getOpenFrames.py --video video.mp4
+
 
 # import the necessary packages
 from scipy.spatial import distance as dist
@@ -33,8 +35,6 @@ def mouth_aspect_ratio(mouth):
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-# ap.add_argument("-p", "--shape-predictor", required=False, default='shape_predictor_68_face_landmarks.dat',
-#   help="path to facial landmark predictor")
 ap.add_argument("-v", "--video", default="trump.mp4",
                 help="video path input")
 args = vars(ap.parse_args())
@@ -46,7 +46,7 @@ MOUTH_AR_THRESH = 0.65
 # the facial landmark predictor
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(args["shape_predictor"])
+predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
 
 # grab the indexes of the facial landmarks for the mouth
 (mStart, mEnd) = (49, 68)
@@ -58,12 +58,13 @@ fvs = FileVideoStream(path=args["video"]).start()
 frame_width = 640
 frame_height = 360
 
+framerate = 25
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 30, (frame_width,frame_height))
+out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), framerate, (frame_width,frame_height))
 
 csvFile = open('records.csv', 'w')
 csvWriter = csv.writer(csvFile)
-csvWriter.writerow(['Frame rate:', '30 fps'])
+csvWriter.writerow(['Frame rate:', '{} fps'.format(str(framerate))])
 csvWriter.writerow(['Frame number', 'MAR'])
 
 # loop over frames from the video stream
@@ -105,7 +106,7 @@ while True:
       if mar > MOUTH_AR_THRESH:
         cv2.putText(frame, "Mouth is Open!", (30,60),
         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
-        print('Current frame num is {}. Corresponds to time {} s'.format(frameNum, frameNum/30.0))
+        # print('Current frame num is {}. Corresponds to time {} s'.format(frameNum, frameNum/30.0))
         csvFile = open('records.csv', 'a')
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow([frameNum, mar])
@@ -115,6 +116,9 @@ while True:
     frameNum+=1
   else:
     break
+
+print('Finished!')
+print('Closing everything.')
 
 # do a bit of cleanup
 cv2.destroyAllWindows()
