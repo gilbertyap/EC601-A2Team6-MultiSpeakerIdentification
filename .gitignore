@@ -3,3 +3,8 @@ ThirdPartyTools/scd/train/
 ThirdPartyTools/sad/train/
 ThirdPartyTools/emb/train/
 *.qlog
+Sprint5/downloadedVideos/
+Sprint5/tempFolder/
+Sprint5/convertedFiles/audio/
+Sprint5/convertedFiles/scoreRttms/
+Sprint5/convertedFiles/video/
