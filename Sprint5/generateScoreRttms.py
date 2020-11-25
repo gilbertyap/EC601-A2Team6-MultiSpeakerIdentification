@@ -16,5 +16,5 @@ for file in audioFileList:
         diarization = pipeline({'audio': './convertedFiles/audio/'+file})
 
         # dump result to disk using RTTM format
-        with open('./convertedFiles/audio/'+scoreFileName, 'w') as f:
+        with open('./convertedFiles/scoreRttms/'+scoreFileName, 'w') as f:
             diarization.write_rttm(f)
