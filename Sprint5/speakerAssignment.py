@@ -1,3 +1,8 @@
+# This file is for manually making reference rttms files
+# This process uses the most aggressive setting of webrtcvad with a 30ms window
+# to detect voice in an audio file. The user is then responsible for giving
+# an identity to each audio clip.
+
 import contextlib, os, simpleaudio, webrtcvad, wave
 
 # Returns the quantized signal of an audio file
@@ -9,6 +14,7 @@ def getAudioFileData(filePath):
 
     return file_data
 
+# Function for documenting the speaker
 def pickSpeaker(speakerList):
     if len(speakerList) == 0:
         print('Please give speaker an identity (1,2,3...,etc.).')
@@ -30,7 +36,6 @@ def pickSpeaker(speakerList):
 
 if __name__ == '__main__':
     # Initiate VAD
-    # This value seems to be too precise at 3 and too broad 2
     vad = webrtcvad.Vad(3)
 
     convertAudioFolder = './convertedFiles/audio/'
@@ -46,7 +51,7 @@ if __name__ == '__main__':
         os.mkdir(tempFolder)
 
     sample_rate = 16000
-    frame_duration = 30  # ms
+    frame_duration = 10  # ms
 
     for file in fileList:
         fileBytes = getAudioFileData(convertAudioFolder+file)
@@ -59,7 +64,6 @@ if __name__ == '__main__':
             startTime = 0.0
             # Frame is bytes per frame_duration, sample is 2 bytes
             frameSize = 2*int(sample_rate * frame_duration / 1000)
-            # print('Audio is {} bytes long, making it {} miliseconds long'.format(len(fileBytes), frame_duration*len(fileBytes)/(frameSize)))
             
             print('Generating reference rttm for {}...'.format(file))
             for i in range(0, int(len(fileBytes)/frameSize)):
@@ -69,12 +73,15 @@ if __name__ == '__main__':
                         # Create a blank wave file
                         with open(tempFolder+fileName+'.wav', mode='w') as f2:
                             pass
-                        
+
+                        # Temporarily save the wave file
+                        # TODO: Could probably find a library that reads the bytes from Python directly
                         with contextlib.closing(wave.open(tempFolder+fileName+'.wav', mode='wb')) as wf:
                                 wf.setnchannels(1)
                                 wf.setsampwidth(2)
                                 wf.setframerate(sample_rate)
                                 wf.writeframes(fileBytes[frameSize*(i-int(currentTurnDuration/frame_duration)):(frameSize*i)+frameSize])
+
                         # Playback the sound and have the user give the speaker an id
                         print('Playing voice clip found at {}'.format(startTime))
                         waveObj = simpleaudio.WaveObject.from_wave_file(tempFolder+fileName+'.wav')

@@ -7,7 +7,7 @@ videoPrefix = 'https://www.youtube.com/watch?v='
 
 print('Getting all videos from links.txt...')
 videoLinks = []
-with open('links.txt','r') as f:
+with open('links2.txt','r') as f:
     videoLinks = f.readlines()
 
 # Make video folder
@@ -22,10 +22,7 @@ for link in videoLinks:
         print('Attempting to download video from {}'.format(link))
         yt = YouTube(videoPrefix+link)
         # Try to download video at 720p quality if possible
-        for stream in yt.streams.filter(progressive=True, file_extension='mp4'):
-            if stream.resolution ==  '720p':
-                stream.download(downloadPath, filename=link)
-                break
+        yt.streams.filter(progressive=True, file_extension='mp4', resolution='720p').first().download()
         history.append(randIndex)
         print('Download succeeded!')
     except:

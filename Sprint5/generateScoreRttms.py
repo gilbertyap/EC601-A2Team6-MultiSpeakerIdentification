@@ -2,8 +2,8 @@
 import torch
 import os
 
-audioFileList = os.listdir('./convertedFiles/audio/')
-scoresFileList = os.listdir('./convertedFiles/scoreRttms/')
+audioFileList = os.listdir('./convertedFiles/audio')
+scoresFileList = os.listdir('./convertedFiles/scoreRttms')
 
 pipeline = torch.hub.load('pyannote/pyannote-audio', 'dia')
 

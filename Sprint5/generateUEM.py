@@ -33,14 +33,12 @@ if __name__ == '__main__':
             startTime = 0.0
             # Frame is bytes per 10ms 
             frameSize = 2*int(sample_rate * frame_duration / 1000)
-            # print('Audio is {} bytes long, making it {} miliseconds long'.format(len(fileBytes), 10*len(fileBytes)/(frameSize)))
             
             print('Generating turns for {}...'.format(file))
             for i in range(0, int(len(fileBytes)/frameSize)):
                 frame = fileBytes[frameSize*i:(frameSize*i)+frameSize]
                 if (vad.is_speech(frame, sample_rate) != isSpeechTurn):
                     if isSpeechTurn:
-                        # print('{} NA {} {}\n'.format(file, startTime, round(currentTurnDuration / 1000,3)))
                         # Check for audio "chunks" that are only greater than 2 seconds long
                         if round(currentTurnDuration / 1000,3) >= 2:
                             f.write('{} 1 {} {}\n'.format(fileName, startTime, round(currentTurnDuration / 1000,3)))
