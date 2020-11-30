@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     framerate = 25
     # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-    # out = cv2.VideoWriter('masking.avi',cv2.VideoWriter_fourcc('M','J','P','G'), framerate, (frame_width,frame_height))
+    out = cv2.VideoWriter('masking.avi',cv2.VideoWriter_fourcc('M','J','P','G'), framerate, (frame_width,frame_height))
 
     csvFile = open('luminosity.csv', 'w')
     csvWriter = csv.writer(csvFile)
@@ -75,9 +75,12 @@ if __name__ == "__main__":
             faces = detector(gray, 0)
 
             # loop over the face detections
-            # imgMask = np.zeros(frame.shape, np.uint8)
-            # imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
-            print('Frame num : {}'.format(frameNum))
+            imgMask = np.zeros(frame.shape, np.uint8)
+            imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
+            if(frameNum % 100) == 0:
+                print('Frame num : {}'.format(frameNum))
+            
+            i=0
             for face in faces:
                 # determine the facial landmarks for the face region, then
                 # convert the facial landmark (x, y)-coordinates to a NumPy
@@ -98,19 +101,35 @@ if __name__ == "__main__":
                 mask = np.zeros(frame.shape, np.uint8)
                 mask = cv2.drawContours(mask, [mouthHull], -1, (255,255,255), -1)
                 mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-                # imgMask = cv2.bitwise_or(imgMask, mask)
+                imgMask = cv2.bitwise_or(imgMask, mask)
                 maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
                 averageLuminosity = get_luminosity_of_masked_image(maskedImage)
                 csvFile = open('luminosity.csv', 'a')
                 csvWriter = csv.writer(csvFile)
                 csvWriter.writerow([frameNum, averageLuminosity])
+                cv2.drawContours(frame, [mouthHull], -1, (0, 255, 0), 1)
+                cv2.putText(frame, "Avg Lum: {}".format(averageLuminosity), (30+(120*i), 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+                # Draw text if mouth is open
+                lumThresh = 63
+                if averageLuminosity < lumThresh:
+                  if i == 0:
+                      cv2.putText(frame, "Mouth is Open!", (30,60),
+                                  cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
+                  else:
+                      cv2.putText(frame, "Mouth is Open!", (640-120,60),
+                                  cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
+                  # print('Current frame num is {}. Corresponds to time {} s'.format(frameNum, frameNum/framerate))
+                i+=1
+                break
 
             # Mask the image
             # maskedImage = cv2.bitwise_and(frame, frame, mask=imgMask)
-            # cv2.imwrite('./tempFolder/test_{}.jpg'.format(frameNum), maskedImage)
+            # cv2.imwrite('./tempFolder/vid_{}.jpg'.format(frameNum), maskedImage)
             
             # Write the frame into the file 'output.avi'
-            # out.write(frame)
+            out.write(frame)
             frameNum+=1
         else:
             break
