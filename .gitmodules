@@ -4,6 +4,3 @@
 [submodule "ThirdPartyTools/pyannote-audio"]
 	path = ThirdPartyTools/pyannote-audio
 	url = https://github.com/pyannote/pyannote-audio.git
-[submodule "ThirdPartyTools/mouth-open"]
-	path = ThirdPartyTools/mouth-open
-	url = https://github.com/mauckc/mouth-open.git
