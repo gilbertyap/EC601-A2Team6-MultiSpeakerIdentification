@@ -1,6 +1,6 @@
 clc;
 clear all;
-data = readmatrix('video6.csv');
+data = readmatrix('SxvUs6WFWn0.csv');
 data = data';
 frameNums = data(1,:);
 startIndex = 1;
@@ -20,4 +20,4 @@ if startIndex ~= i
     durations = [ durations (frameNums(i)-frameNums(startIndex))/25];
 end
 newData = [offsets; durations]'
-writematrix(newData, 'video6_data.txt')
+writematrix(newData, 'SxvUs6WFWn0_frames.csv')

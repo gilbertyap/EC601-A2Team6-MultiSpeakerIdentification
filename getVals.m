@@ -1,6 +1,6 @@
 clc;
 clear all;
-data = readmatrix('video1.csv');
+data = readmatrix('SxvUs6WFWn0.csv');
 data = data';
 lumVals = data(2,:);
 lumVals(find(lumVals > 90)) = [];
