@@ -7,7 +7,7 @@ if __name__ == "__main__":
                     help="csv file path")
     args = vars(ap.parse_args())
     file = args['file']
-    if '.csv' in file:
+    if not ('.csv' in file):
        print('Did not input a csv file!')
        sys.exit(1)
     else:

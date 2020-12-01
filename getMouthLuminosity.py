@@ -85,7 +85,6 @@ if __name__ == "__main__":
             if(frameNum % 100) == 0:
                 print('Frame num : {}'.format(frameNum))
             
-            i=0
             for face in faces:
                 # determine the facial landmarks for the face region, then
                 # convert the facial landmark (x, y)-coordinates to a NumPy
@@ -109,12 +108,8 @@ if __name__ == "__main__":
                 imgMask = cv2.bitwise_or(imgMask, mask)
                 maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
                 averageLuminosity = get_luminosity_of_masked_image(maskedImage)
-                csvFile = open(fileName+'.csv', 'a')
-                csvWriter = csv.writer(csvFile)
-                csvWriter.writerow([frameNum, averageLuminosity])
-                csvFile.close()
                 cv2.drawContours(frame, [mouthHull], -1, (0, 255, 0), 1)
-                cv2.putText(frame, "Avg Lum: {}".format(averageLuminosity), (30+(120*i), 30),
+                cv2.putText(frame, "Avg Lum: {}".format(averageLuminosity), (30, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
                 # Draw text if mouth is open
@@ -125,14 +120,13 @@ if __name__ == "__main__":
                     sys.exit(1)
                 
                 if averageLuminosity < lumThresh:
-                  if i == 0:
-                      cv2.putText(frame, "Speaker is speaking!", (30,60),
-                                  cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
-                  else:
-                      cv2.putText(frame, "Speaker is speaking!", (640-120,60),
-                                  cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
+                    cv2.putText(frame, "Speaker is speaking!", (30,60),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
+                    csvFile = open(fileName+'.csv', 'a')
+                    csvWriter = csv.writer(csvFile)
+                    csvWriter.writerow([frameNum, averageLuminosity])
+                    csvFile.close()
                   # print('Current frame num is {}. Corresponds to time {} s'.format(frameNum, frameNum/framerate))
-                i+=1
                 break
 
             # Mask the image
