@@ -9,12 +9,11 @@ GitHub repository for EC601 Product Design Section A2 Team 6 project.
 
 ## Project Details
 
-[Sprint 1](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint1)
-
-[Sprint 2](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint2)
-
-[Sprint 3](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint3)
-
-[Sprint 4](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint4)
-
-[Sprint 5](https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/tree/master/Sprint4)
+## Instructions
+1. `git clone https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification.git`
+1. `pip install -r requirements.txt`
+1. `./setup.sh`
+1. `downloaVideos.py`
+1. `convertVideos.py`
+1. `generateUEM.py`
+1. `generateUEMasRttm.py`
