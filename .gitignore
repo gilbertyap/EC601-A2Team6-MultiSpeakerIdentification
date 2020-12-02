@@ -1,5 +1,3 @@
 /a2team6-env/
-ThirdPartyTools/scd/train/
-ThirdPartyTools/sad/train/
-ThirdPartyTools/emb/train/
-*.qlog
+convertedFiles/
+downloadedVideos/
