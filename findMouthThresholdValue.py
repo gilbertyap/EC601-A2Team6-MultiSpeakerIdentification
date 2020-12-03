@@ -82,6 +82,8 @@ if __name__ == "__main__":
             if(frameNum % 100) == 0:
                 print('Frame num : {}'.format(frameNum))
             
+            csvFile = open(fileName+'.csv', 'a')
+            csvWriter = csv.writer(csvFile)
             for face in faces:
                 # determine the facial landmarks for the face region, then
                 # convert the facial landmark (x, y)-coordinates to a NumPy
@@ -105,11 +107,9 @@ if __name__ == "__main__":
                 imgMask = cv2.bitwise_or(imgMask, mask)
                 maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
                 averageLuminosity = get_luminosity_of_masked_image(maskedImage)
-                csvFile = open(fileName+'.csv', 'a')
-                csvWriter = csv.writer(csvFile)
                 csvWriter.writerow([frameNum, averageLuminosity])
-                csvFile.close()
-
+            
+            csvFile.close()
             frameNum+=1
         else:
             break
