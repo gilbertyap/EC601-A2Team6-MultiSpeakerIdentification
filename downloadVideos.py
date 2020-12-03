@@ -23,10 +23,9 @@ for link in videoLinks:
         yt = YouTube(videoPrefix+link)
         # Try to download video at 720p quality if possible
         yt.streams.filter(progressive=True, file_extension='mp4', resolution='720p').first().download(downloadPath, filename=link)
-        history.append(randIndex)
         print('Download succeeded!')
     except:
        print('Unable to download this video.')
-        continue
+       continue
 
 print('Finished downloading all videos')
