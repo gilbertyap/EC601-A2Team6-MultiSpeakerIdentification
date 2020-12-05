@@ -1,7 +1,7 @@
 # USAGE
-# python getOpenFrames.py -v video.mp4
+# python findMouthThresholdValue.py -v video.mp4
 # or 
-# python getOpenFrames.py --video video.mp4
+# python findMouthThresholdValue.py --video video.mp4
 
 # import the necessary packages
 from imutils.video import FileVideoStream
@@ -54,13 +54,15 @@ if __name__ == "__main__":
     frame_height = 360
 
     framerate = 25
-    # Define the codec and create VideoWriter object
+    # Create CSV files for the mouth luminosity values of all frames
+    # and a file for the pixel coordinates of the outline
     fileName, fileExt = os.path.splitext(args["video"])
-    csvFile = open(fileName+'.csv', 'w')
-    csvWriter = csv.writer(csvFile)
-    csvFile.close()
-    # csvWriter.writerow(['Frame rate', '{} fps'.format(str(framerate))])
-    # csvWriter.writerow(['Frame number', 'Luminosity'])
+    mouthLumCsvName = fileName+'_mouthLum.csv'
+    with open(mouthLumCsvName, 'w') as mouthLumCsv:
+        mouthLumCsvWriter = csv.writer(mouthLumCsv)
+    mouthCoorCsvName = fileName+'_mouthCoor.csv'
+    with open(mouthCoorCsvName, 'w') as mouthCoorCsv:
+        mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
 
     # loop over frames from the video stream
     frameNum = 0
@@ -75,15 +77,18 @@ if __name__ == "__main__":
 
             # detect faces in the grayscale frame
             faces = detector(gray, 0)
-
-            # loop over the face detections
-            imgMask = np.zeros(frame.shape, np.uint8)
-            imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
+            
             if(frameNum % 100) == 0:
                 print('Frame num : {}'.format(frameNum))
             
-            csvFile = open(fileName+'.csv', 'a')
-            csvWriter = csv.writer(csvFile)
+            # loop over the face detections
+            imgMask = np.zeros(frame.shape, np.uint8)
+            imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
+            
+            mouthLumCsv = open(mouthLumCsvName, 'a')
+            mouthLumCsvWriter = csv.writer(mouthLumCsv)
+            mouthCoorCsv = open(mouthCoorCsvName, 'a')
+            mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
             for face in faces:
                 # determine the facial landmarks for the face region, then
                 # convert the facial landmark (x, y)-coordinates to a NumPy
@@ -92,9 +97,9 @@ if __name__ == "__main__":
                 shape = face_utils.shape_to_np(shape)
                 # TODO: Should we be using ML to track faces?
                 
-                # extract the mouth coordinates, then use the
-                # coordinates to compute the mouth aspect ratio
+                # extract the mouth coordinates
                 mouth = shape[mStart:mEnd]
+                mouthCoorCsvWriter.writerow(mouth)
                 
                 # compute the convex hull for the mouth, then
                 # visualize the mouth
@@ -107,9 +112,9 @@ if __name__ == "__main__":
                 imgMask = cv2.bitwise_or(imgMask, mask)
                 maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
                 averageLuminosity = get_luminosity_of_masked_image(maskedImage)
-                csvWriter.writerow([frameNum, averageLuminosity])
+                mouthLumCsvWriter.writerow([frameNum, averageLuminosity])
             
-            csvFile.close()
+            mouthLumCsv.close()
             frameNum+=1
         else:
             break

@@ -59,11 +59,22 @@ if __name__ == "__main__":
     # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
     fileName, fileExt = os.path.splitext(args["video"])
     out = cv2.VideoWriter(fileName+'_mouth.avi',cv2.VideoWriter_fourcc('M','J','P','G'), framerate, (frame_width,frame_height))
-    csvFile = open(fileName+'.csv', 'w')
-    csvWriter = csv.writer(csvFile)
-    csvFile.close()
-    # csvWriter.writerow(['Frame rate', '{} fps'.format(str(framerate))])
-    # csvWriter.writerow(['Frame number', 'Luminosity'])
+
+    # Read the csv files from the first pass
+    # Calculate the threshold value
+    with open(mouthLumCsvName, 'r') as mouthLumCsv:
+        mouthLumCsvReader = csv.reader(mouthLumCsv)
+        luminosityList = []
+        for row in mouthLumCsvReader:
+            if row != []:
+                luminosityList.append(row[1])
+        threshold = np.mean(luminosityList) + (0.75*np.sqrt(np.var(luminosityList)))
+        
+
+    # Have the mouth landmark coordinates ready so that you can draw the convex hull easily
+    mouthCoorCsvName = fileName+'_mouthCoor.csv'
+    with open(mouthCoorCsvName, 'r') as mouthCoorCsv:
+        # mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
 
     # loop over frames from the video stream
     frameNum = 0
@@ -74,64 +85,6 @@ if __name__ == "__main__":
         frame = fvs.read()
         if not (frame is None):
             frame = imutils.resize(frame, width=frame_width)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-            # detect faces in the grayscale frame
-            faces = detector(gray, 0)
-
-            # loop over the face detections
-            imgMask = np.zeros(frame.shape, np.uint8)
-            imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
-            if(frameNum % 100) == 0:
-                print('Frame num : {}'.format(frameNum))
-            
-            for face in faces:
-                # determine the facial landmarks for the face region, then
-                # convert the facial landmark (x, y)-coordinates to a NumPy
-                # array
-                shape = predictor(gray, face)
-                shape = face_utils.shape_to_np(shape)
-                # TODO: Should we be using ML to track faces?
-                
-                # extract the mouth coordinates, then use the
-                # coordinates to compute the mouth aspect ratio
-                mouth = shape[mStart:mEnd]
-                
-                # compute the convex hull for the mouth, then
-                # visualize the mouth
-                mouthHull = cv2.convexHull(mouth)
-                
-                # Generate a mask for each mouth
-                mask = np.zeros(frame.shape, np.uint8)
-                mask = cv2.drawContours(mask, [mouthHull], -1, (255,255,255), -1)
-                mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-                imgMask = cv2.bitwise_or(imgMask, mask)
-                maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
-                averageLuminosity = get_luminosity_of_masked_image(maskedImage)
-                cv2.drawContours(frame, [mouthHull], -1, (0, 255, 0), 1)
-                cv2.putText(frame, "Avg Lum: {}".format(averageLuminosity), (30, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-
-                # Draw text if mouth is open
-                try:
-                    lumThresh = float(args['threshold'])
-                except:
-                    print('Input threhold value not valid!')
-                    sys.exit(1)
-                
-                if averageLuminosity < lumThresh:
-                    cv2.putText(frame, "Speaker is speaking!", (30,60),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255),2)
-                    csvFile = open(fileName+'.csv', 'a')
-                    csvWriter = csv.writer(csvFile)
-                    csvWriter.writerow([frameNum, averageLuminosity])
-                    csvFile.close()
-                  # print('Current frame num is {}. Corresponds to time {} s'.format(frameNum, frameNum/framerate))
-                break
-
-            # Mask the image
-            # maskedImage = cv2.bitwise_and(frame, frame, mask=imgMask)
-            # cv2.imwrite('./tempFolder/vid_{}.jpg'.format(frameNum), maskedImage)
             
             # Write the frame into the file 'output.avi'
             out.write(frame)
