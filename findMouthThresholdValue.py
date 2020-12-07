@@ -22,9 +22,30 @@ def get_luminosity_of_masked_image(frame):
     luminosity = grayFrame.sum()
     nonMaskPixels = np.array(np.nonzero(grayFrame)).size
     # print('L: {}, Total: {}, Avg: {}'.format(luminosity, nonMaskPixels, round(luminosity/(nonMaskPixels))))
-    # return round(luminosity/(nonMaskPixels))
     return luminosity/(nonMaskPixels)
 
+def generate_video_speaker_detection_rttm(frameAndLumList, fileName):
+    newFrameAndLum = [[],[]]
+    threshold = np.mean(frameAndLumList[1]) + (0.75*np.sqrt(np.var(frameAndLumList[1])))
+    for i in range(0, len(frameAndLumList[0])):
+        if frameAndLumList[1][i] <= threshold:
+            newFrameAndLum[0].append(frameAndLumList[0][i])
+            newFrameAndLum[1].append(frameAndLumList[1][i])
+
+    # Generate the offset and duration of each sections where the mouth is open
+    offsetAndDuration = [[],[]]
+    startIndex = 0
+    for i in range(0, len(newFrameAndLum[0])-1):
+        if (newFrameAndLum[0][i] != (newFrameAndLum[0][i+1])-1):
+            # Sum all of the previous frames into one offset
+            offsetAndDuration[0].append(newFrameAndLum[0][startIndex]/25)
+            offsetAndDuration[1].append((newFrameAndLum[0][i]-newFrameAndLum[0][startIndex]+1)/25)
+            startIndex = i+1
+
+    with open(fileName+'_vsd.uem','w') as f:
+        for i in range(0, len(offsetAndDuration[0])):
+            # f.write('SPEAKER {} 1 {} {} <NA> <NA> 1 <NA> <NA>\n'.format(fileName, offsetAndDuration[0][i], offsetAndDuration[1][i]))
+            f.write('{} 1 {} {}\n'.format(fileName, offsetAndDuration[0][i], offsetAndDuration[0][i]+offsetAndDuration[1][i]))
 
 if __name__ == "__main__":
     # construct the argument parse and parse the arguments
@@ -54,15 +75,12 @@ if __name__ == "__main__":
     frame_height = 360
 
     framerate = 25
-    # Create CSV files for the mouth luminosity values of all frames
-    # and a file for the pixel coordinates of the outline
+    frameAndLumList = [[],[]]
+    # Create CSV file for the pixel coordinates of the outline
     fileName, fileExt = os.path.splitext(args["video"])
-    mouthLumCsvName = fileName+'_mouthLum.csv'
-    with open(mouthLumCsvName, 'w') as mouthLumCsv:
-        mouthLumCsvWriter = csv.writer(mouthLumCsv)
-    mouthCoorCsvName = fileName+'_mouthCoor.csv'
-    with open(mouthCoorCsvName, 'w') as mouthCoorCsv:
-        mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
+    # mouthCoorCsvName = fileName+'_mouthCoor.csv'
+    # with open(mouthCoorCsvName, 'w') as mouthCoorCsv:
+    #     mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
 
     # loop over frames from the video stream
     frameNum = 0
@@ -85,10 +103,8 @@ if __name__ == "__main__":
             imgMask = np.zeros(frame.shape, np.uint8)
             imgMask = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
             
-            mouthLumCsv = open(mouthLumCsvName, 'a')
-            mouthLumCsvWriter = csv.writer(mouthLumCsv)
-            mouthCoorCsv = open(mouthCoorCsvName, 'a')
-            mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
+            # mouthCoorCsv = open(mouthCoorCsvName, 'a')
+            # mouthCoorCsvWriter = csv.writer(mouthCoorCsv)
             for face in faces:
                 # determine the facial landmarks for the face region, then
                 # convert the facial landmark (x, y)-coordinates to a NumPy
@@ -99,7 +115,7 @@ if __name__ == "__main__":
                 
                 # extract the mouth coordinates
                 mouth = shape[mStart:mEnd]
-                mouthCoorCsvWriter.writerow(mouth)
+                # mouthCoorCsvWriter.writerow(mouth)
                 
                 # compute the convex hull for the mouth, then
                 # visualize the mouth
@@ -111,10 +127,10 @@ if __name__ == "__main__":
                 mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
                 imgMask = cv2.bitwise_or(imgMask, mask)
                 maskedImage = cv2.bitwise_and(frame, frame, mask=mask)
-                averageLuminosity = get_luminosity_of_masked_image(maskedImage)
-                mouthLumCsvWriter.writerow([frameNum, averageLuminosity])
-            
-            mouthLumCsv.close()
+                frameAndLumList[0].append(frameNum)
+                frameAndLumList[1].append(get_luminosity_of_masked_image(maskedImage))
+                
+            # mouthCoorCsv.close()
             frameNum+=1
         else:
             break
@@ -125,4 +141,7 @@ if __name__ == "__main__":
     # do a bit of cleanup
     cv2.destroyAllWindows()
     fvs.stop()
+    
+    print('Creating vsd -based uem.')
+    generate_video_speaker_detection_rttm(frameAndLumList, fileName)
     sys.exit(0)
