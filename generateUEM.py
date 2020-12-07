@@ -43,7 +43,7 @@ if __name__ == '__main__':
                     if isSpeechTurn:
                         # Check for audio "chunks" that are only greater than 2 seconds long
                         # if round(currentTurnDuration / 1000,3) >= 1:
-                        f.write('{} 1 {} {}\n'.format(fileName, startTime, round(currentTurnDuration / 1000,3)))
+                        f.write('{} 1 {} {}\n'.format(fileName, startTime, startTime+round(currentTurnDuration / 1000,3)))
                         # Export the frame to a wav file
                         # with contextlib.closing(wave.open(uemFolder+fileName+'_'+str(i)+'.wav', 'wb')) as wf:
                             # wf.setnchannels(1)
