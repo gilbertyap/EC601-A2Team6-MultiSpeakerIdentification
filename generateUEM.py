@@ -14,7 +14,7 @@ def getAudioFileData(filePath):
 if __name__ == '__main__':
     # Initiate VAD
     vad = webrtcvad.Vad()
-    vad.set_mode(0)
+    vad.set_mode(3)
 
     convertAudioFolder = './convertedFiles/audio/'
     uemFolder = './convertedFiles/uem/'

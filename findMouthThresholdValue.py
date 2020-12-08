@@ -17,35 +17,35 @@ import os, sys
 def get_luminosity_of_masked_image(frame):
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # In the frame, there will be black pixels representing the masked portions, do not count those in the average
-    luminosity = 0
-    nonMaskPixels = 0
     luminosity = grayFrame.sum()
     nonMaskPixels = np.array(np.nonzero(grayFrame)).size
     # print('L: {}, Total: {}, Avg: {}'.format(luminosity, nonMaskPixels, round(luminosity/(nonMaskPixels))))
     return luminosity/(nonMaskPixels)
 
 def generate_video_speaker_detection_rttm(frameAndLumList, fileName):
-    newFrameAndLum = [[],[]]
+    newFrameAndLum = []
     threshold = np.mean(frameAndLumList[1]) + (0.75*np.sqrt(np.var(frameAndLumList[1])))
     for i in range(0, len(frameAndLumList[0])):
         if frameAndLumList[1][i] <= threshold:
-            newFrameAndLum[0].append(frameAndLumList[0][i])
-            newFrameAndLum[1].append(frameAndLumList[1][i])
+            newFrameAndLum.append(frameAndLumList[0][i])
 
-    # Generate the offset and duration of each sections where the mouth is open
-    offsetAndDuration = [[],[]]
+    # Generate the offsets of each sections where the mouth is open
+    offsets = [[],[]]
     startIndex = 0
-    for i in range(0, len(newFrameAndLum[0])-1):
-        if (newFrameAndLum[0][i] != (newFrameAndLum[0][i+1])-1):
+    for i in range(0, len(newFrameAndLum)-1):
+        if (newFrameAndLum[i] != (newFrameAndLum[i+1])-1):
             # Sum all of the previous frames into one offset
-            offsetAndDuration[0].append(newFrameAndLum[0][startIndex]/25)
-            offsetAndDuration[1].append((newFrameAndLum[0][i]-newFrameAndLum[0][startIndex]+1)/25)
+            offsets[0].append(newFrameAndLum[startIndex]/25)
+            offsets[1].append((newFrameAndLum[i]-newFrameAndLum[startIndex]+1)/25)
             startIndex = i+1
 
-    with open(fileName+'_vsd.uem','w') as f:
-        for i in range(0, len(offsetAndDuration[0])):
-            # f.write('SPEAKER {} 1 {} {} <NA> <NA> 1 <NA> <NA>\n'.format(fileName, offsetAndDuration[0][i], offsetAndDuration[1][i]))
-            f.write('{} 1 {} {}\n'.format(fileName, offsetAndDuration[0][i], offsetAndDuration[0][i]+offsetAndDuration[1][i]))
+    with open(fileName+'_vsd.rttm','w') as f:
+    # For UEM
+    # with open(fileName+'_vsd.uem','w') as f:
+        for i in range(0, len(offsets[0])):
+            f.write('SPEAKER {} 1 {} {} <NA> <NA> 1 <NA> <NA>\n'.format(fileName, offsets[0][i], offsets[1][i]))
+            # For UEMs
+            # f.write('{} 1 {} {}\n'.format(fileName, round(offsets[0][i],2), round(offsets[0][i]+round(offsets[1][i],2))))
 
 if __name__ == "__main__":
     # construct the argument parse and parse the arguments
@@ -142,6 +142,6 @@ if __name__ == "__main__":
     cv2.destroyAllWindows()
     fvs.stop()
     
-    print('Creating vsd -based uem.')
+    print('Creating vsd -based rttm.')
     generate_video_speaker_detection_rttm(frameAndLumList, fileName)
     sys.exit(0)
