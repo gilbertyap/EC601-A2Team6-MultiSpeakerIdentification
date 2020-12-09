@@ -1,15 +1,18 @@
-# Boston University EC601 (A2) Team6: Video Speaker Detection
-
-# Project Summary
+# Boston University EC601 (A2) Team6: Visual Speaker Identification in Noisy Environments
 
 ## Contributors:
 * Gilbert Yap - gilberty@bu.edu
 * Xinyue Zhou - zhoux17@bu.edu
 
+# Project Summary
+
+This repository contains the code done for research done on detecting speakers in a noisy environment. This research was done for EC601 "Product Design in Electrical and Computer Engineering" at Boston University during Fall 2020. 
+
+The code implements an algorithm that calculates the average luminosity of a speaker's mouth to determine if their mouth is open. In the six videos tested, the algorithm had about 50% accuracy on average. Reference files were handmade by utilizing `webrtcvad` to detect speech in single-speaker videos and verify speech vs non-speech sections. When the reference file did not include sections of the video that had no face, accuracy of the algorithm increased to about 60% on average.
+
 ## Requirements
 1. Python >= 3.8.5
 1. Linux System
-1. Installation of the `requirements.txt` file
 
 ## Installation
 1. `git clone https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification.git`
@@ -18,7 +21,7 @@
 1. `source a2team6-env/bin/activate`
 1. `./setup.sh`
 
-## Instructions
+## Demo Instructions
 1. `source a2team6-env/bin/activate` (If venv has not been activated)
 1. Unzip the `ref_rttms.zip` file and place `ref_rttms` folder into project directory.
 1. Download the demo YouTube videos with `downloadVideos.py`.
@@ -30,13 +33,11 @@
 * Compile a table of results for the README based on the video links provided in this repository
 * Finish updating instructions
 
-## Stretch Goals
-* Implement facial recognition in `videoSpeakerDetection.py` to track multiple mouths in videos
-
 ## Project Details
 
 GitHub repository for EC601 Product Design Section A2 Team 6 project. Will insert project summary here prior to poster presentations.
 
+![PerformanceChart](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/examples/PerformanceChart.png)
 
 ## Citations
 
@@ -56,7 +57,8 @@ GitHub repository for EC601 Product Design Section A2 Team 6 project. Will inser
   Title={Visual speech detection using OpenCV}, 
   url={https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf}, 
   Journal={Third International Conference on Open-Source Systems and Technologies 19-22 December 2009, Lahore, Pakistan.}, 
-  Publisher={University of Engineering &amp; Technology Lahore}, author={Khan, Muhammad Usman Ghani and Mahmood, Sajid and Ahmed, Mahmood and Gotoh, Yoshihiko}, 
+  Publisher={University of Engineering &amp; Technology Lahore}, 
+  author={Khan, Muhammad Usman Ghani and Mahmood, Sajid and Ahmed, Mahmood and Gotoh, Yoshihiko}, 
   Year={2009}, 
   Month={Dec}
 }
@@ -64,7 +66,7 @@ GitHub repository for EC601 Product Design Section A2 Team 6 project. Will inser
 
 ```
 @misc{ryant_2019, 
-  Title={nryant/dscore}, 
+  Title={dscore}, 
   url={https://github.com/nryant/dscore}, 
   Journal={dscore}, 
   Publisher={GitHub}, 
