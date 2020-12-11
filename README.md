@@ -42,4 +42,4 @@ Khan, Muhammad Usman Ghani ; Mahmood, Sajid ; Ahmed, Mahmood ; Gotoh, Yoshihiko 
 
 Ryant, Neville. **dscore**. _GitHub_. 2019. https://github.com/nryant/dscore
 
-Snyder, David; Chen, Guoguo; Povey, Daniel; *MUSAN: A Music, Speech, and Noise Corpus*. _arXiv_. 2015. https://www.openslr.org/17/
+Snyder, David; Chen, Guoguo; Povey, Daniel; **MUSAN: A Music, Speech, and Noise Corpus**. _arXiv_. 2015. https://www.openslr.org/17/
