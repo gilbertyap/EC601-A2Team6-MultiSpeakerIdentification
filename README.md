@@ -6,9 +6,17 @@
 
 # Project Summary
 
-This repository contains the code done for research done on detecting speakers in a noisy environment. This research was done for EC601 "Product Design in Electrical and Computer Engineering" at Boston University during Fall 2020. 
+This repository contains the code done for research done on detecting speakers in a noisy environment through visual detection. This research was done for EC601 "Product Design in Electrical and Computer Engineering" at Boston University during Fall 2020. Going forward, the abbreviation for visual speaker identification, VSI, will be used to describe the algorithm used.
 
-The code implements an algorithm that calculates the average luminosity of a speaker's mouth to determine if their mouth is open. In the six videos tested, the algorithm had about 50% accuracy on average. Reference files were handmade by utilizing `webrtcvad` to detect speech in single-speaker videos and verify speech vs non-speech sections. When the reference file did not include sections of the video that had no face, accuracy of the algorithm increased to about 60% on average.
+The VSI method calculates the average luminosity of a speaker's mouth to determine if their mouth is open. Using OpenCV, we process every frame of the video and record the average luminosity of the mouth region based on the facial landmarks of the [dlib](http://dlib.net/face_detector.py.html) face detector. These luminosity values are stored and are processed once all frames have been examined. Once all frames of the video have been processed, the mean of the luminosity value plus the standard deviation is used as the threshold value. The output of the library is a "Rich Transcription Time Marked (RTTM)" formatted text file that can be used with [dscore](https://github.com/nryant/dscore) for scoring against a reference file.
+
+In the six videos tested, the algorithm had about 50% accuracy on average. Reference files were handmade by utilizing [webrtcvad](https://github.com/wiseman/py-webrtcvad) to verify speech in single-speaker videos. Additional testing was done to compare the reference files against the VSI algorithm when only the segments of video that had a face were consider. The accuracy of the VSI method increased to about 60% on average in this situation. Below is the performance of `webrtcvad`'s VAD method vs our VSI method when additional audio from the MUSAN noise dataset was added on top of the video's audio.
+
+![PerformanceChart](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/examples/PerformanceChart.png)
+
+As seen above, the situations where the VSI method performed better than the VAD method was when white noise-types of audio were added on top of the video's audio. For music, the VSI method's worst performance was still 7% better than VAD when only segments where a face was presented was considered. We noticed that there were cases of false positives (see `/examples/false_positive.jpg`) where speakers were smiling or had their mouth slightly open while not speaking that tricked the system. We also noticed some shortcomings of the facial landmark tracking when speakers with beards were given larger mouth areas than non-beared speakers. If the beard hair color was dark, this tricked the VSI method into thinking the speaker's mouth was open more often than it actually was. One way of navigating around this issue would be to implement a weighting system that places more emphasis in the center of the detected mouth so that instances were the mouth is over estimated can be compensated for.
+
+The VSI algorithm is based on the paper ["Visual speech detection using OpenCV"](https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf), which claimed an accuracy of 60-75% when the luminosity thresholding was combined with other learning and statistical methods. In our (rather) small dataset of 6 videos, the average performance was 50-60% accuracy. Going forward, it would be beneficial to increase this dataset to increase our confidence in this accuracy. Of course, the dataset should contain a diverse set of speakers of different genders, backgrounds, and speaking styles. 
 
 ## Requirements
 1. Python >= 3.8.5
@@ -23,66 +31,15 @@ The code implements an algorithm that calculates the average luminosity of a spe
 
 ## Demo Instructions
 1. `source a2team6-env/bin/activate` (If venv has not been activated)
-1. Unzip the `ref_rttms.zip` file and place `ref_rttms` folder into project directory.
-1. Download the demo YouTube videos with `downloadVideos.py`.
-1. Use `convertVideos.py` to setup video and audio in `convertedFiles` as needed by project
+1. Unzip the `ref_rttms.zip` to get access to the reference rttm files. 
+1. Download the demo YouTube videos with `downloadVideos.py`. There are a total of 6 videos.
+1. Use `convertVideos.py` to setup video and audio in `convertedFiles` as needed by project. This converts the videos into 25 FPS and the audio into 16000 Hz sampled, 16-bit PCM wav files.
 1. Run `./getVsdRttms.sh` to run `findMouthThresholdValue.py` on each of the videos in `/convertedFiles/video/`. Resulting `rttm` files will be in `/convertedFiles/video/` for each video.
-1. Use `score.py -r ./convertedFiles/uem/yourreference.rttm -s /path/to/generated/rttm.rttm` in `ThirdPartyTools/dscore/` for scoring the Video Speaker Detection against a reference file.
-
-## TODO
-* Compile a table of results for the README based on the video links provided in this repository
-* Finish updating instructions
-
-## Project Details
-
-GitHub repository for EC601 Product Design Section A2 Team 6 project. Will insert project summary here prior to poster presentations.
-
-![PerformanceChart](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/examples/PerformanceChart.png)
+1. Use `/ThirdPartyTools/dscore/score.py -r ./convertedFiles/uem/yourreference.rttm -s /path/to/generated/rttm.rttm` in `ThirdPartyTools/dscore/` for scoring the Video Speaker Detection against a reference file.
 
 ## Citations
+Khan, Muhammad Usman Ghani ; Mahmood, Sajid ; Ahmed, Mahmood ; Gotoh, Yoshihiko . **Visual speech detection using OpenCV**. _Third International Conference on Open-Source Systems and Technologies_. University of Engineering & Technology Lahore. December 2009. https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf. 
 
-```
-@inproceedings{Bredin2020,
-  Title = {{pyannote.audio: neural building blocks for speaker diarization}},
-  Author = {{Bredin}, Herv{\'e} and {Yin}, Ruiqing and {Coria}, Juan Manuel and {Gelly}, Gregory and {Korshunov}, Pavel and {Lavechin}, Marvin and {Fustes}, Diego and {Titeux}, Hadrien and {Bouaziz}, Wassim and {Gill}, Marie-Philippe},
-  Booktitle = {ICASSP 2020, IEEE International Conference on Acoustics, Speech, and Signal Processing},
-  Address = {Barcelona, Spain},
-  Month = {May},
-  Year = {2020},
-}
-```
+Ryant, Neville. **dscore**. _GitHub_. 2019. https://github.com/nryant/dscore
 
-```
-@misc{khan_mahmood_ahmed_gotoh_2009, 
-  Title={Visual speech detection using OpenCV}, 
-  url={https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf}, 
-  Journal={Third International Conference on Open-Source Systems and Technologies 19-22 December 2009, Lahore, Pakistan.}, 
-  Publisher={University of Engineering &amp; Technology Lahore}, 
-  author={Khan, Muhammad Usman Ghani and Mahmood, Sajid and Ahmed, Mahmood and Gotoh, Yoshihiko}, 
-  Year={2009}, 
-  Month={Dec}
-}
-```
-
-```
-@misc{ryant_2019, 
-  Title={dscore}, 
-  url={https://github.com/nryant/dscore}, 
-  Journal={dscore}, 
-  Publisher={GitHub}, 
-  Author={Ryant, Neville}, 
-  Year={2019}, 
-  Month={Mar}
-}
-```
-
-```
-@misc{snyder2015musan,
-      title={MUSAN: A Music, Speech, and Noise Corpus}, 
-      author={David Snyder and Guoguo Chen and Daniel Povey},
-      year={2015},
-      eprint={1510.08484},
-      archivePrefix={arXiv},
-      primaryClass={cs.SD}
-}
-```
+Snyder, David; Chen, Guoguo; Povey, Daniel; *MUSAN: A Music, Speech, and Noise Corpus*. _arXiv_. 2015. https://www.openslr.org/17/

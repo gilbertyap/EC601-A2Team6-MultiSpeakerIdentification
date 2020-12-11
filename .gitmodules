@@ -1,6 +1,3 @@
 [submodule "ThirdPartyTools/dscore"]
 	path = ThirdPartyTools/dscore
 	url = https://github.com/nryant/dscore.git
-[submodule "ThirdPartyTools/pyannote-audio"]
-	path = ThirdPartyTools/pyannote-audio
-	url = https://github.com/pyannote/pyannote-audio.git
