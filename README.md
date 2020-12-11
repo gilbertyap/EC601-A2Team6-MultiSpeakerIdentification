@@ -1,92 +1,45 @@
-# Boston University EC601 (A2) Team6: MultiSpeakerIdentification
+# Boston University EC601 (A2) Team6: Visual Speaker Identification in Noisy Environments
 
 ## Contributors:
 * Gilbert Yap - gilberty@bu.edu
 * Xinyue Zhou - zhoux17@bu.edu
 
+# Project Summary
+
+This repository contains the code done for research done on detecting speakers in a noisy environment through visual detection. This research was done for EC601 "Product Design in Electrical and Computer Engineering" at Boston University during Fall 2020. Going forward, the abbreviation for visual speaker identification, VSI, will be used to describe the algorithm used.
+
+The VSI method calculates the average luminosity of a speaker's mouth to determine if their mouth is open. Using OpenCV, we process every frame of the video and record the average luminosity of the mouth region based on the facial landmarks of the [dlib](http://dlib.net/face_detector.py.html) face detector. These luminosity values are stored and are processed once all frames have been examined. Once all frames of the video have been processed, the mean of the luminosity value plus the standard deviation is used as the threshold value. The output of the library is a "Rich Transcription Time Marked (RTTM)" formatted text file that can be used with [dscore](https://github.com/nryant/dscore) for scoring against a reference file.
+
+In the six videos tested, the algorithm had about 50% accuracy on average. Reference files were handmade by utilizing [webrtcvad](https://github.com/wiseman/py-webrtcvad) to verify speech in single-speaker videos. Additional testing was done to compare the reference files against the VSI algorithm when only the segments of video that had a face were consider. The accuracy of the VSI method increased to about 60% on average in this situation. Below is the performance of `webrtcvad`'s VAD method vs our VSI method when additional audio from the MUSAN noise dataset was added on top of the video's audio.
+
+![PerformanceChart](https://raw.githubusercontent.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification/master/examples/PerformanceChart.png)
+
+As seen above, the situations where the VSI method performed better than the VAD method was when white noise-types of audio were added on top of the video's audio. For music, the VSI method's worst performance was still 7% better than VAD when only segments where a face was presented was considered. We noticed that there were cases of false positives (see `/examples/false_positive.jpg`) where speakers were smiling or had their mouth slightly open while not speaking that tricked the system. We also noticed some shortcomings of the facial landmark tracking when speakers with beards were given larger mouth areas than non-beared speakers. If the beard hair color was dark, this tricked the VSI method into thinking the speaker's mouth was open more often than it actually was. One way of navigating around this issue would be to implement a weighting system that places more emphasis in the center of the detected mouth so that instances were the mouth is over estimated can be compensated for.
+
+The VSI algorithm is based on the paper ["Visual speech detection using OpenCV"](https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf), which claimed an accuracy of 60-75% when the luminosity thresholding was combined with other learning and statistical methods. In our (rather) small dataset of 6 videos, the average performance was 50-60% accuracy. Going forward, it would be beneficial to increase this dataset to increase our confidence in this accuracy. Of course, the dataset should contain a diverse set of speakers of different genders, backgrounds, and speaking styles. 
+
 ## Requirements
 1. Python >= 3.8.5
 1. Linux System
-1. Installation of the `requirements.txt` file
 
 ## Installation
 1. `git clone https://github.com/gilbertyap/EC601-A2Team6-MultiSpeakerIdentification.git`
 1. `pip install -r requirements.txt`
+1. `python3 -m venv a2team6-env`
+1. `source a2team6-env/bin/activate`
 1. `./setup.sh`
-1. `source a2team6-env/bin/activate`
-1. `./setup2.sh`
 
-## Instructions
-1. `source a2team6-env/bin/activate`
-1. `downloadVideos.py`
-1. `convertVideos.py`
-1. `generateUEM.py`
-1. `generateUEMasRttm.py`
-1. `findMouthThresholdValue.py -v /path/to/videofile.ext`
-1. Use `getVals.m` on the video to get the threshold value for the following step
-1. `videoSpeakerDetection.py -v /path/to/videofile.ext -t 123.456` but replace the last number with the final printed value from `getVals.m`
-1. Use `genFrameNums.m` on the video to generate the csv file with (offset, duration) format of RTTM files for use with dscore.
-1. `convertCsvToRttm -f /path/to/csvfile.csv` to convert the csv file generated above
-1. `ThirdPartyTools/dscore/score.py -r ./convertedFiles/uem/yourreference.rttm -s /path/to/generated/rttm.rttm` for scoring the Video Speaker Detection against a reference file
-
-## TODO
-* Convert the matlab scripts into python and condese the number of steps required
-* Compile a table of results for the README based on the video links provided in this repository
-* Add noise on top of video audio and rerun `webrtcvad` and compare against video speaker detection
-
-## Stretch Goals
-* Implement facial recognition in `videoSpeakerDetection.py` to track multiple mouths in videos
-
-## Project Details
-
-### Sprint 5
-
-In Sprint4, we were optimistic about being able to implement an OpenCV mouth-tracking algorithm to work as a substitute for Voice Activity Detection (VAD). We were using the library [mouth-open](https://github.com/mauckc/mouth-open/), which utilizes the dlib facial landmark profile, to check for an open or closed mouth based on the Mouth Aspect Ratio (MAR). The MAR is based on the ratio between the horizontal edges of the lips and two sets of verticle points  where the upper leap peaks. However, we found that this type of tracking was only good for "O" shaped mouths, which is not how a majority of American English is spoken. When reviewing the videos generated by `mouth-open`, we found that there were many false positives and no MAR threshold value that would balance false positives and accurate tracking.
-
-While searching for other open-source video speaker detection software, we came across the paper ["Visual speech detection using OpenCV"](https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf). This paper outlines a method for detecting speakers by measuring the average luminosity of the the mouth for a detected face. Ordinarily when someone speaks, the mouth will be slightly open. If one were to take the average luminosity value of the mouth area for a closed mouth, it will be a bigger value than when they are speaking since the mouth cavity is dark and thus brings down the average luminosity. Examples of annotated videos can be found in `/examples/`.
-
-One issue that we were unable to tackle was the situation when there are multiple faces in a video. The `dlib`-based algorithm along with `opencv` allows us to find the faces in a video, but it does not allow us to track the identity of those faces, so keeping tracking of whose mouth was open when proved more difficult. Since we simply want to prove that there is useful information in the video, we hand-picked our dataset from [WIRED's "Autocomplete Interviews"](https://www.youtube.com/playlist?list=PLibNZv5Zd0dwjZFCTVZ8QdKq194CkwXjo) where the video contained only one speaker. The lighting, positioning, and speech style of the video is consistent. The videos also contain a diverse set of speakers with different face shapes, colors, hair, etc. which is important is testing the limits of our algorithm.
-
-Since we are attempting to create a visual version of VAD, we compared the results of `webrtvad` against our visual algorithm. The Visual speech detection using OpenCV" paper claims an accuracy of 60-75% and we found that for a particular video, we saw a ~38% error against `webrtcvad` (using aggressiveness setting 0 and on a 10 ms window). We want to expand our testing to more videos, but it takes some time to generate reference files to compare against. 
-
-By the final poster presentation, we hope to have a table of results against many videos and further testing/data gathering on noisy audio. There is some code clean up and optimizations that would be ideal for our final presentation, so we will be working on that over the next week. 
-
----
-GitHub repository for EC601 Product Design Section A2 Team 6 project. Will insert project summary here prior to poster presentations.
-
+## Demo Instructions
+1. `source a2team6-env/bin/activate` (If venv has not been activated)
+1. Unzip the `ref_rttms.zip` to get access to the reference rttm files. 
+1. Download the demo YouTube videos with `downloadVideos.py`. There are a total of 6 videos.
+1. Use `convertVideos.py` to setup video and audio in `convertedFiles` as needed by project. This converts the videos into 25 FPS and the audio into 16000 Hz sampled, 16-bit PCM wav files.
+1. Run `./getVsdRttms.sh` to run `findMouthThresholdValue.py` on each of the videos in `/convertedFiles/video/`. Resulting `rttm` files will be in `/convertedFiles/video/` for each video.
+1. Use `/ThirdPartyTools/dscore/score.py -r ./convertedFiles/uem/yourreference.rttm -s /path/to/generated/rttm.rttm` in `ThirdPartyTools/dscore/` for scoring the Video Speaker Detection against a reference file.
 
 ## Citations
+Khan, Muhammad Usman Ghani ; Mahmood, Sajid ; Ahmed, Mahmood ; Gotoh, Yoshihiko . **Visual speech detection using OpenCV**. _Third International Conference on Open-Source Systems and Technologies_. University of Engineering & Technology Lahore. December 2009. https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf. 
 
-```
-@inproceedings{Bredin2020,
-  Title = {{pyannote.audio: neural building blocks for speaker diarization}},
-  Author = {{Bredin}, Herv{\'e} and {Yin}, Ruiqing and {Coria}, Juan Manuel and {Gelly}, Gregory and {Korshunov}, Pavel and {Lavechin}, Marvin and {Fustes}, Diego and {Titeux}, Hadrien and {Bouaziz}, Wassim and {Gill}, Marie-Philippe},
-  Booktitle = {ICASSP 2020, IEEE International Conference on Acoustics, Speech, and Signal Processing},
-  Address = {Barcelona, Spain},
-  Month = {May},
-  Year = {2020},
-}
-```
+Ryant, Neville. **dscore**. _GitHub_. 2019. https://github.com/nryant/dscore
 
-```
-@misc{khan_mahmood_ahmed_gotoh_2009, 
-  Title={Visual speech detection using OpenCV}, 
-  url={https://www.uet.edu.pk/Conferences/icosst2009/presentations_2009/Research_Papers/Visual_speech_detection_using_OpenCV.pdf}, 
-  Journal={Third International Conference on Open-Source Systems and Technologies 19-22 December 2009, Lahore, Pakistan.}, 
-  Publisher={University of Engineering &amp; Technology Lahore}, author={Khan, Muhammad Usman Ghani and Mahmood, Sajid and Ahmed, Mahmood and Gotoh, Yoshihiko}, 
-  Year={2009}, 
-  Month={Dec}
-}
-```
-
-```
-@misc{ryant_2019, 
-  Title={nryant/dscore}, 
-  url={https://github.com/nryant/dscore}, 
-  Journal={dscore}, 
-  Publisher={GitHub}, 
-  Author={Ryant, Neville}, 
-  Year={2019}, 
-  Month={Mar}
-}
-```
+Snyder, David; Chen, Guoguo; Povey, Daniel; *MUSAN: A Music, Speech, and Noise Corpus*. _arXiv_. 2015. https://www.openslr.org/17/
